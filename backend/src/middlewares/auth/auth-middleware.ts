@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import { ResponseHandler } from "../../components/response-handler/response-handler";
 import { UserService } from "../../services/user/user-service";
+import { UserProps } from "../../utils/types/front-end/auth/auth-types";
+import { createPayload } from "../../utils/helper/common-functions";
 
 const ProtectedRouteMiddleware = async (req: any, res: any, next: any) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
@@ -38,14 +40,7 @@ const ProtectedRouteMiddleware = async (req: any, res: any, next: any) => {
 
     const user = decoded && (await UserService.findUserById({ _id: decoded?._id }));
 
-    const userDetails = {
-      username: user?.username,
-      email: user?.email,
-      bio: user?.bio,
-      avatar_url: user?.avatar_url,
-      date_registered: user?.date_registered,
-      token: user?.token,
-    }
+    const userDetails = createPayload(user, ["_id", "username", "email", "bio", "avatar_url", "date_registered", "is_admin", "password"]);
 
     req.userDetails = userDetails
     next();

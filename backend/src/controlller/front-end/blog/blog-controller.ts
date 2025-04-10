@@ -26,12 +26,12 @@ export const BlogController = {
 
   async createBlog(req: any, res: any, next: NextFunction) {
     try {
-      const blog = await BlogService.createBlog(req.body);
+      const blog = await BlogService.createBlog(req.body, req.userDetails);
 
       return ResponseHandler.success({
         res,
         statusCode: 200,
-        message: "Blogs fetched successfully",
+        message: "Blog created successfully",
         data: blog,
       });
 

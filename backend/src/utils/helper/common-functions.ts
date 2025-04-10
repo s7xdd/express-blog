@@ -56,3 +56,18 @@ export const buildQueryFromRules = (
     return query;
 };
 
+
+export const createPayload = <T extends object, K extends keyof T>(
+    data: T,
+    fields: K[]
+  ): Pick<T, K> => {
+    const result = {} as Pick<T, K>;
+  
+    for (const field of fields) {
+      if (data[field] !== undefined) {
+        result[field] = data[field];
+      }
+    }
+  
+    return result;
+  };

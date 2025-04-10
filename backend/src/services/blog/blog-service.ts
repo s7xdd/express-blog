@@ -5,6 +5,7 @@ import { BlogModel } from "../../models/blog-schema";
 import { QueryRuleProps } from "../../utils/types/common-types";
 import { buildQueryFromRules } from "../../utils/helper/common-functions";
 import { NextFunction } from "express";
+import { UserProps } from "../../utils/types/front-end/auth/auth-types";
 
 export const BlogService = {
   async findBlogById({ _id }: { _id: string }) {
@@ -16,9 +17,10 @@ export const BlogService = {
     }
   },
 
-  async createBlog(blogData: any) {
+  async createBlog(blogData: any, userDetails: UserProps) {
     try {
       const blog = new BlogModel({
+        author_id: userDetails._id,
         ...blogData,
       });
 

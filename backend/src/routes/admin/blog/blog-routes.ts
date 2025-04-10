@@ -7,7 +7,9 @@ import { ProtectedRouteMiddleware } from "../../../middlewares/auth/auth-middlew
 
 const blogRouter = Router();
 
+blogRouter.use(ProtectedRouteMiddleware)
+
 blogRouter.get("/", BlogController.getBlogs);
-blogRouter.post("/create-blog", ProtectedRouteMiddleware, validateData(createBlogValidationSchema), BlogController.createBlog)
+blogRouter.post("/create-blog", validateData(createBlogValidationSchema), BlogController.createBlog)
 
 export default blogRouter;
