@@ -1,7 +1,7 @@
 import { NextFunction } from "express";
 
 import { ResponseHandler } from "../../../components/response-handler/response-handler";
-import { UserService } from "../../../services/front-end/user/user-service";
+import { UserService } from "../../../services/user/user-service";
 import { getJWTUserDetails } from "../../../utils/helper/auth/auth-functions";
 
 export const UserController = {

@@ -1,7 +1,7 @@
 import * as bcrypt from "bcrypt";
 
 import { decodeJwt } from "../jwt/jwt-functions";
-import { UserService } from "../../../services/front-end/user/user-service";
+import { UserService } from "../../../services/user/user-service";
 
 export const handleUserExistence = async ({
   username,

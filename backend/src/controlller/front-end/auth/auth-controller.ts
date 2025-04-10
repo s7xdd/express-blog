@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 import { ResponseHandler } from "../../../components/response-handler/response-handler";
 import { comparePasswords, handleUserExistence } from "../../../utils/helper/auth/auth-functions";
-import { UserService } from "../../../services/front-end/user/user-service";
+import { UserService } from "../../../services/user/user-service";
 import { generateJwt } from "../../../utils/helper/jwt/jwt-functions";
 
 export const AuthController = {
