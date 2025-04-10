@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
 import * as bcrypt from "bcrypt";
+import { Request, Response, NextFunction } from "express";
 
 import { ResponseHandler } from "../components/response-handler/response-handler";
 import { comparePasswords, handleUserExistence } from "../utils/helper/auth/auth-functions";

@@ -8,7 +8,7 @@ export const UserController = {
   async getUserDetails(req: any, res: any, next: NextFunction) {
     const tokenDetails = await getJWTUserDetails(req);
 
-    const userDetails = tokenDetails && (await UserService.findUserById({ _id: tokenDetails._id }));
+    const userDetails = tokenDetails && (await UserService.findUserById({ _id: tokenDetails?._id }));
 
     try {
       return ResponseHandler.success({
