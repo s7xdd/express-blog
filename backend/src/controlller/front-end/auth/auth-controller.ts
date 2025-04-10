@@ -10,7 +10,7 @@ export const AuthController = {
   async registerUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { username, password } = req.body;
-      await handleUserExistence({ username, throwUserExistsError: true, UserModel: UserModel });
+      await handleUserExistence({ username, throwUserExistsError: true });
 
       const newUser = await UserService.createUser({ username, password });
 
@@ -28,7 +28,8 @@ export const AuthController = {
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { username, password } = req.body;
-      await handleUserExistence({ username, throwNoUserExistsError: true, UserModel: UserModel });
+
+      await handleUserExistence({ username, throwNoUserExistsError: true });
 
       const user = await UserService.findUserByUsername({ username });
 

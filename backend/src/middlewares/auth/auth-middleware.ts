@@ -19,14 +19,22 @@ const ProtectedRouteMiddleware = (req: any, res: any, next: any) => {
     });
   }
 
-  jwt.verify(token, process.env.JWT_KEY!, (err: any, decoded: any) => {
+  jwt.verify(token, process.env.JWT_KEY!, { ignoreExpiration: false }, (err: any, decoded: any) => {
     console.log("decoded", process.env.JWT_KEY);
-    if (err)
+    if (err) {
+      if (err.name === "TokenExpiredError") {
+        return ResponseHandler.error({
+          res,
+          statusCode: 401,
+          message: "Token expired",
+        });
+      }
       return ResponseHandler.error({
         res,
         statusCode: 403,
         message: "Unauthorized",
       });
+    }
     next();
   });
 };
