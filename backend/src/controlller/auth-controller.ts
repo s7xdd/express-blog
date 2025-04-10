@@ -10,8 +10,9 @@ export const AuthController = {
   async registerUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { username, password } = req.body;
-      await handleUserExistence({ username, throwUserExistsError: true, res });
+      await handleUserExistence({ username, throwUserExistsError: true });
       const hashedPassword = await bcrypt.hash(password, 10);
+
       const newUser = await UserService.createUser({ username, password: hashedPassword });
 
       ResponseHandler.success({
@@ -28,7 +29,7 @@ export const AuthController = {
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { username, password } = req.body;
-      await handleUserExistence({ username, throwNoUserExistsError: true, res });
+      await handleUserExistence({ username, throwNoUserExistsError: true });
 
       const user = await UserService.findUserByUsername({ username });
 

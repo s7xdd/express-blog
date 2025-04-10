@@ -2,14 +2,12 @@ import * as bcrypt from "bcrypt";
 
 import { decodeJwt } from "../jwt/jwt-functions";
 import { UserModel } from "../../../models/user-schema";
-import { ResponseHandler } from "../../../components/response-handler/response-handler";
 
 export const checkUserExists = async (username: string): Promise<boolean> => {
   const user = await UserModel.findOne({ username });
   return !!user;
 };
 export const handleUserExistence = async ({
-  res,
   username,
   throwUserExistsError = false,
   throwNoUserExistsError = false,
@@ -23,15 +21,15 @@ export const handleUserExistence = async ({
   const userExists = !!user;
 
   if (userExists) {
-    if (throwUserExistsError && res) {
-      ResponseHandler.error({ res, statusCode: 409, message: "User already exists" });
+    if (throwUserExistsError) {
+      throw new Error("User already exists");
     }
     return {
       user,
     };
   } else {
-    if (throwNoUserExistsError && res) {
-      ResponseHandler.error({ res, statusCode: 404, message: `User with username "${username}" does not exist` });
+    if (throwNoUserExistsError) {
+      throw new Error(`User does not exist`);
     }
     return {
       user,
