@@ -1,14 +1,10 @@
 import { connectDb } from "./src/config/db/db-connect";
 import { app } from "./src/config/app/app-config";
 
-import authRouter from "./src/routes/front-end/auth/auth-router";
-import userRouter from "./src/routes/front-end/user/user-router";
 import { errorHandler } from "./src/middlewares/error/error-middleware";
-import blogRouter from "./src/routes/front-end/blog/blog-routes";
+import frontEndRoutes from "./src/routes/front-end-routes";
 
-app.use("/v1/auth", authRouter);
-app.use("/user-details", userRouter);
-app.use("/v1/blogs", blogRouter);
+app.use("/api/v1", frontEndRoutes)
 
 app.use(errorHandler);
 
