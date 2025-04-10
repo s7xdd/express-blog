@@ -1,4 +1,3 @@
-import * as bcrypt from "bcrypt";
 import { Request, Response, NextFunction } from "express";
 
 import { ResponseHandler } from "../../../components/response-handler/response-handler";
@@ -12,9 +11,8 @@ export const AuthController = {
     try {
       const { username, password } = req.body;
       await handleUserExistence({ username, throwUserExistsError: true, UserModel: UserModel });
-      const hashedPassword = await bcrypt.hash(password, 10);
 
-      const newUser = await UserService.createUser({ username, password: hashedPassword });
+      const newUser = await UserService.createUser({ username, password });
 
       ResponseHandler.success({
         res,
