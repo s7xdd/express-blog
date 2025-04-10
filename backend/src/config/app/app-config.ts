@@ -1,6 +1,6 @@
 import express from "express";
 
-import { errorHandler } from "../../middlewares/error/error-middleware";
+import { errorHandler } from "../../shared/middlewares/error/error-middleware";
 
 require("dotenv").config();
 

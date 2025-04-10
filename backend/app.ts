@@ -1,9 +1,9 @@
 import { connectDb } from "./src/config/db/db-connect";
 import { app } from "./src/config/app/app-config";
 
-import { errorHandler } from "./src/middlewares/error/error-middleware";
-import frontEndRoutes from "./src/routes/front-end-routes";
-import adminRoutes from "./src/routes/admin/admin-router";
+import { errorHandler } from "./src/shared/middlewares/error/error-middleware";
+import frontEndRoutes from "./src/routes/frontend-router";
+import adminRoutes from "./src/routes/admin-router";
 
 app.use("/api/v1", frontEndRoutes);
 app.use("/admin/v1", adminRoutes);
