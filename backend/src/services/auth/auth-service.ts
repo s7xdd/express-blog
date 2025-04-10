@@ -9,10 +9,9 @@ export const AuthService = {
   async register(username: string, password: string): Promise<any> {
     try {
       await handleUserExistence({ username, throwUserExistsError: true });
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(password, process.env.BCRYPT_SALT!);
       const newUser = new UserModel({ username, password: hashedPassword });
       await newUser.save();
-
       return newUser;
     } catch (error: any) {
       handleMongooseErrors(error);

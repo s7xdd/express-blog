@@ -1,8 +1,11 @@
 import { connectDb } from "./src/config/db/db-connect";
+import { app } from "./src/config/app/app-config";
+
 import authRouter from "./src/routes/auth/auth-router";
 import userRouter from "./src/routes/user-router";
-import { app } from "./src/config/app/app-config";
 import { errorHandler } from "./src/middlewares/error-middleware";
+
+
 
 app.use("/auth", authRouter);
 app.use("/user-details", userRouter);
