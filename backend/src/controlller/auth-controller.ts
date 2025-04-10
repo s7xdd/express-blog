@@ -8,7 +8,7 @@ export const AuthController = {
     try {
       const { username, password } = req.body;
 
-      const newUser = await AuthService.register(username, password);
+      const newUser = await AuthService.register(username, password, res);
 
       ResponseHandler.success({
         res,
@@ -25,7 +25,7 @@ export const AuthController = {
     try {
       const { username, password } = req.body;
 
-      const { token, username: loggedInUsername } = await AuthService.login(username, password);
+      const { token, username: loggedInUsername } = await AuthService.login(username, password, res);
 
       ResponseHandler.success({
         res,

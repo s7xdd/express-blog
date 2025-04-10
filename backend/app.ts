@@ -6,7 +6,6 @@ import userRouter from "./src/routes/user-router";
 import { errorHandler } from "./src/middlewares/error-middleware";
 
 
-
 app.use("/auth", authRouter);
 app.use("/user-details", userRouter);
 
