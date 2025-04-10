@@ -43,4 +43,15 @@ export const UserService = {
       handleMongooseErrors(error);
     }
   },
+
+  async updateBlogCount({ _id, addBlog = true }: { _id: string, addBlog?: boolean }) {
+    try {
+      const user: any = await this.findUserById({ _id });
+      const newBlogCount = Math.max((addBlog ? user.total_blogs + 1 : user.total_blogs - 1), 0);
+
+      await user.updateOne({ total_blogs: newBlogCount })
+    } catch (error) {
+      handleMongooseErrors(error);
+    }
+  }
 };

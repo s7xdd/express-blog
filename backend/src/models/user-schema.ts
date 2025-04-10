@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  total_blogs: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
   bio: {
     type: String,
     trim: true,

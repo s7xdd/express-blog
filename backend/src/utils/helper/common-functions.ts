@@ -100,3 +100,8 @@ export const sluggify = (str: string): string => {
         .replace(/\-\-+/g, '-')
         .replace(/^-+|-+$/g, '');
 };
+
+export const sanitizeArray = (arr: any[]) =>
+    Array.isArray(arr)
+        ? [...new Set(arr.map((item) => String(item).trim()).filter(Boolean))]
+        : [];

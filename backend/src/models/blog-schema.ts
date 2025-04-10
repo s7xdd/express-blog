@@ -23,8 +23,10 @@ const blogSchema = new mongoose.Schema({
   },
   categories: [
     {
-      type: String,
-      trim: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+
     },
   ],
   tags: [
