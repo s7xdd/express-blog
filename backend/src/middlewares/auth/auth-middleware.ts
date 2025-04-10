@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ResponseHandler } from "../components/response-handler/response-handler";
+import { ResponseHandler } from "../../components/response-handler/response-handler";
 
 const ProtectedRouteMiddleware = (req: any, res: any, next: any) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");

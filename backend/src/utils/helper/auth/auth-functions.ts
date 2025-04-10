@@ -1,21 +1,17 @@
 import * as bcrypt from "bcrypt";
 
 import { decodeJwt } from "../jwt/jwt-functions";
-import { UserModel } from "../../../models/user-schema";
 
-export const checkUserExists = async (username: string): Promise<boolean> => {
-  const user = await UserModel.findOne({ username });
-  return !!user;
-};
 export const handleUserExistence = async ({
   username,
   throwUserExistsError = false,
   throwNoUserExistsError = false,
+  UserModel,
 }: {
   username: string;
   throwUserExistsError?: boolean;
   throwNoUserExistsError?: boolean;
-  res?: any;
+  UserModel: any;
 }) => {
   const user = await UserModel.findOne({ username });
   const userExists = !!user;

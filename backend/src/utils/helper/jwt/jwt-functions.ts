@@ -1,4 +1,4 @@
-import { UserProps } from "../../types/auth/auth-types";
+import { UserProps } from "../../types/front-end/auth/auth-types";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 export const generateJwt = (user: UserProps) => {

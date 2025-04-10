@@ -1,16 +1,17 @@
 import * as bcrypt from "bcrypt";
 import { Request, Response, NextFunction } from "express";
 
-import { ResponseHandler } from "../components/response-handler/response-handler";
-import { comparePasswords, handleUserExistence } from "../utils/helper/auth/auth-functions";
-import { UserService } from "../services/user/user-service";
-import { generateJwt } from "../utils/helper/jwt/jwt-functions";
+import { ResponseHandler } from "../../../components/response-handler/response-handler";
+import { comparePasswords, handleUserExistence } from "../../../utils/helper/auth/auth-functions";
+import { UserService } from "../../../services/front-end/user/user-service";
+import { generateJwt } from "../../../utils/helper/jwt/jwt-functions";
+import { UserModel } from "../../../models/user-schema";
 
 export const AuthController = {
   async registerUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { username, password } = req.body;
-      await handleUserExistence({ username, throwUserExistsError: true });
+      await handleUserExistence({ username, throwUserExistsError: true, UserModel: UserModel });
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const newUser = await UserService.createUser({ username, password: hashedPassword });
@@ -29,7 +30,7 @@ export const AuthController = {
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { username, password } = req.body;
-      await handleUserExistence({ username, throwNoUserExistsError: true });
+      await handleUserExistence({ username, throwNoUserExistsError: true, UserModel: UserModel });
 
       const user = await UserService.findUserByUsername({ username });
 
