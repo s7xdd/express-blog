@@ -22,11 +22,21 @@ export const UserService = {
     }
   },
 
-  async createUser({ username, password }: { username: string; password: string }) {
+  async createUser({
+    username,
+    password,
+    email,
+    bio,
+  }: {
+    username: string;
+    password: string;
+    email: string;
+    bio: string;
+  }) {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const newUser = new UserModel({ username, password: hashedPassword });
+      const newUser = new UserModel({ username, password: hashedPassword, email, bio });
       await newUser.save();
       return newUser;
     } catch (error) {

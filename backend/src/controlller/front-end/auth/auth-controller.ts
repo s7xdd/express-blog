@@ -8,16 +8,23 @@ import { generateJwt } from "../../../utils/helper/jwt/jwt-functions";
 export const AuthController = {
   async registerUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { username, password } = req.body;
+      const { username, password, email, bio } = req.body;
       await handleUserExistence({ username, throwUserExistsError: true });
 
-      const newUser = await UserService.createUser({ username, password });
+      const newUser = await UserService.createUser({ username, password, email, bio });
 
       ResponseHandler.success({
         res,
         statusCode: 201,
-        data: { username: newUser!.username },
         message: "User registered successfully",
+        data: {
+          _id: newUser?._id,
+          username: newUser?.username,
+          email: newUser?.email,
+          bio: newUser?.bio,
+          date_registered: newUser?.date_registered,
+          avatar_url: newUser?.avatar_url,
+        },
       });
     } catch (error) {
       next(error);

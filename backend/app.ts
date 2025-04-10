@@ -8,7 +8,7 @@ import { errorHandler } from "./src/middlewares/error/error-middleware";
 
 app.use("/auth", authRouter);
 app.use("/user-details", userRouter);
-
+  
 app.use(errorHandler);
 
 connectDb().then((res) => {
