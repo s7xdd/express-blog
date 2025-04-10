@@ -2,17 +2,21 @@ import * as bcrypt from "bcrypt";
 import { UserModel } from "../../models/user-schema";
 import { comparePasswords, handleUserExistence } from "../../utils/helper/auth/auth-functions";
 import { generateJwt } from "../../utils/helper/jwt/jwt-functions";
+import mongoose from "mongoose";
+import { handleMongooseErrors } from "../../utils/helper/mongodb/mongo-functions";
 
 export const AuthService = {
   async register(username: string, password: string): Promise<any> {
-    await handleUserExistence({ username, throwUserExistsError: true });
+    try {
+      await handleUserExistence({ username, throwUserExistsError: true });
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = new UserModel({ username, password: hashedPassword });
+      await newUser.save();
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new UserModel({ username, password: hashedPassword });
-    await newUser.save();
-
-    return newUser;
+      return newUser;
+    } catch (error: any) {
+      handleMongooseErrors(error);
+    }
   },
 
   async login(username: string, password: string): Promise<{ token: string; username: string }> {
