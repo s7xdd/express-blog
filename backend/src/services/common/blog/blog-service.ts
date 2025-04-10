@@ -2,7 +2,7 @@
 import { handleMongooseErrors } from "../../../utils/helper/mongodb/mongo-functions";
 import { BlogModel } from "../../../models/blog-schema";
 import { QueryRuleProps } from "../../../utils/types/common-types";
-import { buildQueryFromRules } from "../../../utils/helper/common-functions";
+import { buildQueryFromRules, createPayload, sluggify } from "../../../utils/helper/common-functions";
 import { UserProps } from "../../../utils/types/front-end/auth/auth-types";
 
 export const BlogService = {
@@ -16,10 +16,22 @@ export const BlogService = {
   },
 
   async createBlog(blogData: any, userDetails: UserProps) {
+    
+    const allowedFields = createPayload(blogData, [
+      "title",
+      "content",
+      "categories",
+      "tags",
+      "thumbnail_url",
+      "is_published",
+      "date_published",
+    ]);
+
     try {
       const blog = new BlogModel({
+        slug: sluggify(blogData?.title),
         author_id: userDetails._id,
-        ...blogData,
+        ...allowedFields,
       });
 
       return await blog.save();

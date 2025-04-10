@@ -89,3 +89,14 @@ export const createPayload = (data: AnyObject, fields: string[]): AnyObject => {
 
     return result;
 };
+
+
+export const sluggify = (str: string): string => {
+    return str
+        .toLowerCase()
+        .trim()
+        .replace(/[\s_]+/g, '-')
+        .replace(/[^\w\-]+/g, '')
+        .replace(/\-\-+/g, '-')
+        .replace(/^-+|-+$/g, '');
+};

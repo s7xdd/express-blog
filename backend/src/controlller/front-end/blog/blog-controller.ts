@@ -26,7 +26,6 @@ export const BlogController = {
 
   async createBlog(req: any, res: any, next: NextFunction) {
     try {
-      console.log("reqreq",req)
       const blog = await BlogService.createBlog(req.body, req.userDetails);
 
       return ResponseHandler.success({

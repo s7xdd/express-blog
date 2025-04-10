@@ -6,8 +6,7 @@ import { createPayload } from "../../../utils/helper/common-functions";
 import { AuthService } from "../../../services/backend/auth-service";
 
 export const AuthController = {
-
-
+    
     async loginUser(req: any, res: Response, next: NextFunction) {
         try {
             const { username, password } = req.body;
