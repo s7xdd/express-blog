@@ -1,8 +1,13 @@
 import express from "express";
-import blogRouter from "./blog/blog-routes";
+
+import { ProtectedRouteMiddleware } from "../../middlewares/auth/auth-middleware";
+import { PermissionMiddleware } from "../../middlewares/admin/permission-middleware";
 
 const adminRoutes = express.Router();
 
-adminRoutes.use('/blog', blogRouter);
+adminRoutes.use(ProtectedRouteMiddleware)
+adminRoutes.use(PermissionMiddleware);
+
+adminRoutes.use('/blogs', adminRoutes);
 
 export default adminRoutes; 

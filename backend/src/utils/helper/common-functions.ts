@@ -1,5 +1,8 @@
 import { QueryRuleProps } from "../types/common-types";
 
+type AnyObject = Record<string, any>;
+
+
 export const buildQueryFromRules = (
     queryParams: Record<string, any>,
     rules: QueryRuleProps[]
@@ -57,17 +60,34 @@ export const buildQueryFromRules = (
 };
 
 
-export const createPayload = <T extends object, K extends keyof T>(
-    data: T,
-    fields: K[]
-  ): Pick<T, K> => {
-    const result = {} as Pick<T, K>;
-  
+export const createPayload = (data: AnyObject, fields: string[]): AnyObject => {
+    const result: AnyObject = {};
+
     for (const field of fields) {
-      if (data[field] !== undefined) {
-        result[field] = data[field];
-      }
+        const keys = field
+            .replace(/\[(\w+)\]/g, '.$1')
+            .split('.');
+
+        let source = data;
+        let target = result;
+        let lastKey = keys[keys.length - 1];
+
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+
+            if (i === keys.length - 1) {
+                if (source && source[key] !== undefined) {
+                    target[key] = source[key];
+                }
+            } else {
+                source = source?.[key];
+                if (source === undefined) break;
+
+                if (!target[key]) target[key] = {};
+                target = target[key];
+            }
+        }
     }
-  
+
     return result;
-  };
+};
