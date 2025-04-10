@@ -4,7 +4,6 @@ import { ResponseHandler } from "../../../components/response-handler/response-h
 import { comparePasswords, handleUserExistence } from "../../../utils/helper/auth/auth-functions";
 import { UserService } from "../../../services/front-end/user/user-service";
 import { generateJwt } from "../../../utils/helper/jwt/jwt-functions";
-import { UserModel } from "../../../models/user-schema";
 
 export const AuthController = {
   async registerUser(req: Request, res: Response, next: NextFunction) {
