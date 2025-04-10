@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { ResponseHandler } from "../../components/response-handler/response-handler";
-import { UserService } from "../../services/user/user-service";
+import { UserService } from "../../services/common/user/user-service";
 import { UserProps } from "../../utils/types/front-end/auth/auth-types";
 import { createPayload } from "../../utils/helper/common-functions";
 

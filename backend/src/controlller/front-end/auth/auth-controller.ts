@@ -2,8 +2,9 @@ import { Request, Response, NextFunction } from "express";
 
 import { ResponseHandler } from "../../../components/response-handler/response-handler";
 import { comparePasswords, handleUserExistence } from "../../../utils/helper/auth/auth-functions";
-import { UserService } from "../../../services/user/user-service";
+import { UserService } from "../../../services/common/user/user-service";
 import { generateJwt } from "../../../utils/helper/jwt/jwt-functions";
+import { createPayload } from "../../../utils/helper/common-functions";
 
 export const AuthController = {
   async registerUser(req: Request, res: Response, next: NextFunction) {
@@ -11,20 +12,22 @@ export const AuthController = {
       const { username, password, email, bio } = req.body;
       await handleUserExistence({ username, throwUserExistsError: true });
 
-      const newUser = await UserService.createUser({ username, password, email, bio });
+      const newUser: any = await UserService.createUser({ username, password, email, bio });
+
+      const userPayload = createPayload(newUser, [
+        "_id",
+        "username",
+        "email",
+        "bio",
+        "avatar_url",
+        "date_registered",
+      ]);
 
       ResponseHandler.success({
         res,
         statusCode: 201,
         message: "User registered successfully",
-        data: {
-          _id: newUser?._id,
-          username: newUser?.username,
-          email: newUser?.email,
-          bio: newUser?.bio,
-          date_registered: newUser?.date_registered,
-          avatar_url: newUser?.avatar_url,
-        },
+        data: userPayload,
       });
     } catch (error) {
       next(error);
@@ -35,7 +38,7 @@ export const AuthController = {
     try {
       const { username, password } = req.body;
 
-      const { user } = await handleUserExistence({ username, throwNoUserExistsError: true });
+      const { user }: { user: any } = await handleUserExistence({ username, throwNoUserExistsError: true });
 
       const isPasswordValid = await comparePasswords({
         plainPassword: password,
@@ -46,15 +49,21 @@ export const AuthController = {
         throw new Error("Invalid credentials");
       }
 
-      const token = generateJwt(user!);
+      const token = generateJwt(user);
+
+      const userPayload = createPayload(user, [
+        "_id",
+        "username",
+        "email",
+        "bio",
+        "avatar_url",
+        "date_registered",
+      ]);
 
       ResponseHandler.success({
         res,
         statusCode: 200,
-        data: {
-          username: user!.username,
-          token,
-        },
+        data: userPayload,
         message: "Login successful",
       });
     } catch (error) {

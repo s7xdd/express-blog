@@ -1,11 +1,9 @@
-import * as bcrypt from "bcrypt";
 
-import { handleMongooseErrors } from "../../utils/helper/mongodb/mongo-functions";
-import { BlogModel } from "../../models/blog-schema";
-import { QueryRuleProps } from "../../utils/types/common-types";
-import { buildQueryFromRules } from "../../utils/helper/common-functions";
-import { NextFunction } from "express";
-import { UserProps } from "../../utils/types/front-end/auth/auth-types";
+import { handleMongooseErrors } from "../../../utils/helper/mongodb/mongo-functions";
+import { BlogModel } from "../../../models/blog-schema";
+import { QueryRuleProps } from "../../../utils/types/common-types";
+import { buildQueryFromRules } from "../../../utils/helper/common-functions";
+import { UserProps } from "../../../utils/types/front-end/auth/auth-types";
 
 export const BlogService = {
   async findBlogById({ _id }: { _id: string }) {

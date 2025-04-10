@@ -1,7 +1,7 @@
 import * as bcrypt from "bcrypt";
 
 import { decodeJwt } from "../jwt/jwt-functions";
-import { UserService } from "../../../services/user/user-service";
+import { UserService } from "../../../services/common/user/user-service";
 
 export const handleUserExistence = async ({
   username,
@@ -52,4 +52,12 @@ export const getJWTUserDetails = async (req: any) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
   const userDetails = await decodeJwt(token);
   return userDetails;
+};
+
+
+export const checkPermissionBlock = ({ userDetails, requiredPermission }: { userDetails: any, requiredPermission: string }) => {
+  if (userDetails && userDetails[requiredPermission] === true) {
+    return true;
+  }
+  return false;
 };

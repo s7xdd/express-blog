@@ -1,7 +1,7 @@
 import * as bcrypt from "bcrypt";
 
-import { UserModel } from "../../models/user-schema";
-import { handleMongooseErrors } from "../../utils/helper/mongodb/mongo-functions";
+import { UserModel } from "../../../models/user-schema";
+import { handleMongooseErrors } from "../../../utils/helper/mongodb/mongo-functions";
 
 export const UserService = {
   async findUserByUsername({ username }: { username: string }) {

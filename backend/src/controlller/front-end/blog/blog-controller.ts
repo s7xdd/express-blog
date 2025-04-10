@@ -1,7 +1,7 @@
 import { NextFunction } from "express";
 
 import { ResponseHandler } from "../../../components/response-handler/response-handler";
-import { BlogService } from "../../../services/blog/blog-service";
+import { BlogService } from "../../../services/common/blog/blog-service";
 
 export const BlogController = {
   async getBlogs(req: any, res: any, next: NextFunction) {

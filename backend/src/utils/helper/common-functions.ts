@@ -76,9 +76,7 @@ export const createPayload = (data: AnyObject, fields: string[]): AnyObject => {
             const key = keys[i];
 
             if (i === keys.length - 1) {
-                if (source && source[key] !== undefined) {
-                    target[key] = source[key];
-                }
+                target[key] = source?.[key] ?? '';
             } else {
                 source = source?.[key];
                 if (source === undefined) break;

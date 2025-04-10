@@ -1,7 +1,17 @@
-export const PermissionMiddleware = (req: any, res: any, next: any) => {
-    if (req.user.is_admin) {
+import { ResponseHandler } from "../../components/response-handler/response-handler";
+import { checkPermissionBlock } from "../../utils/helper/auth/auth-functions";
+
+export const PermissionMiddleware = ({ requiredPermission }: { requiredPermission: string }) => (req: any, res: any, next: any) => {
+    const userDetails = req.userDetails;
+    if (checkPermissionBlock({ userDetails, requiredPermission })) {
         next();
     } else {
-        res.status(403).json({ message: "Unauthorized" });
+        return ResponseHandler.error({
+            res,
+            message: "Unauthorized",
+            statusCode: 403,
+
+        })
     }
 };
+
