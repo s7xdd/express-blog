@@ -29,9 +29,7 @@ export const AuthController = {
     try {
       const { username, password } = req.body;
 
-      await handleUserExistence({ username, throwNoUserExistsError: true });
-
-      const user = await UserService.findUserByUsername({ username });
+      const { user } = await handleUserExistence({ username, throwNoUserExistsError: true });
 
       const isPasswordValid = await comparePasswords({
         plainPassword: password,
