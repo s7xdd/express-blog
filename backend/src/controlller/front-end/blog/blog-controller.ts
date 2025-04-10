@@ -12,15 +12,32 @@ export const BlogController = {
         res,
         statusCode: 200,
         message: "Blogs fetched successfully",
-        data: blogs.data,
         props: {
-          total: blogs.totalcount,
-          limit: blogs.limit,
+          total: blogs?.totalcount,
+          limit: blogs?.limit,
           currentPage: Number(req.query.page || 1),
         },
+        data: blogs?.data,
       });
     } catch (error) {
       next(error);
     }
   },
+
+  async createBlog(req: any, res: any, next: NextFunction) {
+    try {
+      const blog = await BlogService.createBlog(req.body);
+
+      return ResponseHandler.success({
+        res,
+        statusCode: 200,
+        message: "Blogs fetched successfully",
+        data: blog,
+      });
+
+    } catch (error) {
+      next(error);
+    }
+  }
+
 };

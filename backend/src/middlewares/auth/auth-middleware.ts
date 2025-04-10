@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { ResponseHandler } from "../../components/response-handler/response-handler";
+import { UserService } from "../../services/user/user-service";
 
-const ProtectedRouteMiddleware = (req: any, res: any, next: any) => {
+const ProtectedRouteMiddleware = async (req: any, res: any, next: any) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token)
@@ -19,8 +20,7 @@ const ProtectedRouteMiddleware = (req: any, res: any, next: any) => {
     });
   }
 
-  jwt.verify(token, process.env.JWT_KEY!, { ignoreExpiration: false }, (err: any, decoded: any) => {
-    console.log("decoded", process.env.JWT_KEY);
+  jwt.verify(token, process.env.JWT_KEY!, { ignoreExpiration: false }, async (err: any, decoded: any) => {
     if (err) {
       if (err.name === "TokenExpiredError") {
         return ResponseHandler.error({
@@ -35,6 +35,19 @@ const ProtectedRouteMiddleware = (req: any, res: any, next: any) => {
         message: "Unauthorized",
       });
     }
+
+    const user = decoded && (await UserService.findUserById({ _id: decoded?._id }));
+
+    const userDetails = {
+      username: user?.username,
+      email: user?.email,
+      bio: user?.bio,
+      avatar_url: user?.avatar_url,
+      date_registered: user?.date_registered,
+      token: user?.token,
+    }
+
+    req.userDetails = userDetails
     next();
   });
 };

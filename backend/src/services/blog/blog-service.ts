@@ -2,6 +2,9 @@ import * as bcrypt from "bcrypt";
 
 import { handleMongooseErrors } from "../../utils/helper/mongodb/mongo-functions";
 import { BlogModel } from "../../models/blog-schema";
+import { QueryRuleProps } from "../../utils/types/common-types";
+import { buildQueryFromRules } from "../../utils/helper/common-functions";
+import { NextFunction } from "express";
 
 export const BlogService = {
   async findBlogById({ _id }: { _id: string }) {
@@ -13,22 +16,13 @@ export const BlogService = {
     }
   },
 
-  async createBlog({
-    blogDetails,
-  }: {
-    blogDetails: {
-      title: string;
-      content: string;
-      categories: string[];
-      tags: string[];
-      thumbnail_url: string;
-      author_id: string;
-    };
-  }) {
+  async createBlog(blogData: any) {
     try {
-      const newBlog = new BlogModel(blogDetails);
-      await newBlog.save();
-      return newBlog;
+      const blog = new BlogModel({
+        ...blogData,
+      });
+
+      return await blog.save();
     } catch (error) {
       handleMongooseErrors(error);
     }
@@ -36,37 +30,17 @@ export const BlogService = {
 
   async findBlogs(queryParams: any) {
     try {
-      const query: any = {};
 
-      if (queryParams.title) {
-        query.title = { $regex: new RegExp(queryParams.title, "i") };
-      }
+      const queryRules: QueryRuleProps[] = [
+        { key: 'title', type: 'regex' },
+        { key: 'author_id', type: 'string' },
+        { key: 'categories', type: 'array' },
+        { key: 'tags', type: 'array' },
+        { key: 'is_published', type: 'boolean' },
+        { key: 'keyword', type: 'search' },
+      ];
 
-      if (queryParams.author_id) {
-        query.author_id = queryParams.author_id;
-      }
-
-      if (queryParams.categories) {
-        query.categories = { $in: queryParams.categories.split(",") };
-      }
-
-      if (queryParams.tags) {
-        query.tags = { $in: queryParams.tags.split(",") };
-      }
-
-      if (queryParams.is_published !== undefined) {
-        query.is_published = queryParams.is_published === "true";
-      }
-
-      if (queryParams.keyword) {
-        const keywordRegex = new RegExp(queryParams.keyword, "i");
-        query.$or = [
-          { title: keywordRegex },
-          { content: keywordRegex },
-          { tags: keywordRegex },
-          { categories: keywordRegex },
-        ];
-      }
+      const query = buildQueryFromRules(queryParams, queryRules);
 
       const limit = parseInt(queryParams.limit, 10) || 10;
       const page = parseInt(queryParams.page, 10) || 1;
@@ -84,7 +58,7 @@ export const BlogService = {
         },
       };
     } catch (error) {
-      throw error;
+      handleMongooseErrors(error);
     }
   },
 };
