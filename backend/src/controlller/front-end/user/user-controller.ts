@@ -12,6 +12,9 @@ export const UserController = {
         message: "User details fetched successfully",
         data: req.userDetails,
       });
-    } catch (error) { }
+    } catch (error) {
+      next(error);
+    }
   },
+
 };
