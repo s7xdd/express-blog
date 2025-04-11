@@ -35,7 +35,7 @@ const blogSchema = new mongoose.Schema({
       trim: true,
     },
   ],
-  thumbnail_url: {
+  thumbnail: {
     type: String,
   },
   is_published: {
