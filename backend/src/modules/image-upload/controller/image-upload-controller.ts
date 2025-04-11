@@ -1,4 +1,3 @@
-import { Request } from "express";
 import path from "path";
 import fs from "fs/promises";
 import { processImage } from "../config/processor";
@@ -21,7 +20,7 @@ export const handleUploadedFiles = async (req: any, outputDir: string): Promise<
       const outputPath = path.join(outputDir, files[0].filename);
 
       await processImage(inputPath, outputPath);
-      processedImages[fieldName] = `/assets/${path.basename(outputPath)}`;
+      processedImages[fieldName] = `/uploads/${path.basename(outputPath)}`;
 
       await fs.unlink(inputPath);
     }

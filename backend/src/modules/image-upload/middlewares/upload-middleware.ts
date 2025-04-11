@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import fs from "fs/promises";
+
 import { createMulterInstance } from "../config/multer-config";
 import { handleUploadedFiles } from "../controller/image-upload-controller";
 

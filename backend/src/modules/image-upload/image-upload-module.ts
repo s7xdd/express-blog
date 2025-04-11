@@ -1,4 +1,4 @@
-import { uploadMiddleware } from "./middlewares/upload";
+import { uploadMiddleware } from "./middlewares/upload-middleware";
 
 export const imageUploadModule = {
   middleware: {
