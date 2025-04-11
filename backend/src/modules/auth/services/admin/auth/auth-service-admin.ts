@@ -4,7 +4,7 @@ import { PERMISSION_BLOCKS } from "../../../constants/auth-constants";
 import { generateJwt } from "../../../functions/jwt-functions";
 
 
-export const AdminAuthService = {
+export const adminAuthService = {
     async login(username: string, password: string) {
         try {
             const { user }: { user: any } = await handleUserExistence({ username: username, throwNoUserExistsError: true });

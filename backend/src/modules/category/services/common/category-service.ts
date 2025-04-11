@@ -3,7 +3,7 @@ import { sluggify } from "../../../../shared/utils/helper/common-functions";
 import { handleMongooseErrors } from "../../../../shared/utils/helper/mongodb/mongo-functions";
 import { CategoryModel } from "../../models/category-schema";
 
-export const CategoryService = {
+export const categoryService = {
     async createCategory(categoryData: { category_title: string }) {
         try {
             const slug = sluggify(categoryData.category_title);

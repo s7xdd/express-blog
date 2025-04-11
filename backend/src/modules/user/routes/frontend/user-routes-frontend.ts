@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import { ProtectedRouteMiddleware } from "../../../../shared/middlewares/auth/auth-middleware";
-import { FrontendUserController } from "../../controllers/frontend/user-controller-frontend";
+import { protectedRouteMiddleware } from "../../../../shared/middlewares/auth/auth-middleware";
+import { frontendUserController } from "../../controllers/frontend/user-controller-frontend";
 
 const frontendUserRouter = Router();
 
-frontendUserRouter.get("/", ProtectedRouteMiddleware, FrontendUserController.getUserDetails);
+frontendUserRouter.get("/", protectedRouteMiddleware, frontendUserController.getUserDetails);
 
 export default frontendUserRouter;

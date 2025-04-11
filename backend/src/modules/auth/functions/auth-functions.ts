@@ -1,7 +1,7 @@
 import * as bcrypt from "bcrypt";
 
 import { decodeJwt } from "./jwt-functions";
-import { UserService } from "../../user/services/common/user-service";
+import { userModule } from "../../user/user-module";
 
 export const handleUserExistence = async ({
   username,
@@ -12,7 +12,7 @@ export const handleUserExistence = async ({
   throwUserExistsError?: boolean;
   throwNoUserExistsError?: boolean;
 }) => {
-  const user = await UserService.findUserByUsername({ username });
+  const user = await userModule.services.common.findUserByUsername({ username });
   const userExists = !!user;
 
   if (userExists) {

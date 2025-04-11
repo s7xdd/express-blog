@@ -7,8 +7,8 @@ import {
   sanitizeArray,
   sluggify,
 } from "../../../../shared/utils/helper/common-functions";
-import { UserService } from "../../../user/services/common/user-service";
-import { CategoryService } from "../../../category/services/common/category-service";
+import { userModule } from "../../../user/user-module";
+import { categoryModule } from "../../../category/category-module";
 
 export const blogService = {
   async findBlogById({ _id }: { _id: string }) {
@@ -21,18 +21,14 @@ export const blogService = {
   },
 
   async createBlog(blogData: any, userDetails: UserProps) {
-    const allowedFields = createPayload(blogData, [
-      "title",
-      "content",
-      "thumbnail_url",
-    ]);
+    const allowedFields = createPayload(blogData, ["title", "content", "thumbnail_url"]);
 
     let categorySlugsOrIds = sanitizeArray(blogData.categories);
     const tags = sanitizeArray(blogData.tags);
 
     const categoryObjectIds = await Promise.all(
       categorySlugsOrIds.map(async (cat) => {
-        const category = await CategoryService.findCategory(cat);
+        const category = await categoryModule.services.common.findCategory(cat);
         if (!category) {
           throw new Error(`Category not found for: ${cat}`);
         }
@@ -50,7 +46,7 @@ export const blogService = {
       });
 
       await blog.save();
-      await UserService.updateBlogCount({ _id: userDetails._id, addBlog: true });
+      await userModule.services.common.updateBlogCount({ _id: userDetails._id, addBlog: true });
 
       return blog;
     } catch (error) {
@@ -75,10 +71,7 @@ export const blogService = {
       const page = parseInt(queryParams.page, 10) || 1;
       const skip = (page - 1) * limit;
 
-      const blogs = await BlogModel.find(query)
-        .sort({ date_published: -1 })
-        .skip(skip)
-        .limit(limit);
+      const blogs = await BlogModel.find(query).sort({ date_published: -1 }).skip(skip).limit(limit);
 
       const totalBlogs = await BlogModel.countDocuments(query);
 

@@ -1,9 +1,9 @@
 import { Router } from "express";
+import { frontendBlogController } from "../../controllers/frontend/blog-frontend-controller";
 
-import { BlogController } from "../../controllers/frontend/blog-frontend-controller";
 
 const blogFrontEndRouter = Router();
 
-blogFrontEndRouter.get("/", BlogController.getBlogs);
+blogFrontEndRouter.get("/", frontendBlogController.getBlogs);
 
 export default blogFrontEndRouter;

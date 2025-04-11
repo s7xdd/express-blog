@@ -1,13 +1,12 @@
 import frontendUserRouter from "./routes/frontend/user-routes-frontend";
-import { UserService } from "./services/common/user-service";
+import { userService } from "./services/common/user-service";
 
 
-export const UserModule = {
+export const userModule = {
     routes: {
-        admin: "",
         frontend: frontendUserRouter,
     },
     services: {
-        userService: UserService,
+        common: userService,
     },
 };

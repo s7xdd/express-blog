@@ -3,7 +3,7 @@ import * as bcrypt from "bcrypt";
 import { UserModel } from "../../models/user-schema";
 import { handleMongooseErrors } from "../../../../shared/utils/helper/mongodb/mongo-functions";
 
-export const UserService = {
+export const userService = {
   async findUserByUsername({ username }: { username: string }) {
     try {
       const user = await UserModel.findOne({ username });

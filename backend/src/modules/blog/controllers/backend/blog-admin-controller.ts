@@ -3,7 +3,7 @@ import { NextFunction } from "express";
 import { ResponseHandler } from "../../../../shared/components/response-handler/response-handler";
 import { blogService } from "../../services/common/blog-service";
 
-export const frontendBlogController = {
+export const adminBlogController = {
   async getBlogs(req: any, res: any, next: NextFunction) {
     try {
       const blogs = await blogService.findBlogs(req.query);
@@ -23,4 +23,21 @@ export const frontendBlogController = {
       next(error);
     }
   },
+
+  async createBlog(req: any, res: any, next: NextFunction) {
+    try {
+      const blog = await blogService.createBlog(req.body, req.userDetails);
+
+      return ResponseHandler.success({
+        res,
+        statusCode: 200,
+        message: "Blog created successfully",
+        data: blog,
+      });
+
+    } catch (error) {
+      next(error);
+    }
+  }
+
 };

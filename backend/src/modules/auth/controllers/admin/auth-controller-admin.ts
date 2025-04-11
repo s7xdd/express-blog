@@ -3,9 +3,9 @@ import { Response, NextFunction } from "express";
 
 import { ResponseHandler } from "../../../../shared/components/response-handler/response-handler";
 import { createPayload } from "../../../../shared/utils/helper/common-functions";
-import { AdminAuthService } from "../../services/admin/auth/auth-service-admin";
+import { adminAuthService } from "../../services/admin/auth/auth-service-admin";
 
-export const AdminAuthController = {
+export const adminAuthController = {
     
     async loginUser(req: any, res: Response, next: NextFunction) {
         try {
@@ -14,7 +14,7 @@ export const AdminAuthController = {
             const data: {
                 user: any;
                 token: string;
-            } = await AdminAuthService.login(username, password);
+            } = await adminAuthService.login(username, password);
 
             const userPayload = createPayload(data?.user, ["_id", "username", "email", "bio", "is_admin", "avatar_url", "date_registered"]);
 

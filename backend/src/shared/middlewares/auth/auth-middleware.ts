@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
-import { ResponseHandler } from "../../components/response-handler/response-handler";
-import { UserService } from "../../../modules/user/services/common/user-service";
-import { createPayload } from "../../utils/helper/common-functions";
 
-const ProtectedRouteMiddleware = async (req: any, res: any, next: any) => {
+import { ResponseHandler } from "../../components/response-handler/response-handler";
+import { createPayload } from "../../utils/helper/common-functions";
+import { userModule } from "../../../modules/user/user-module";
+
+const protectedRouteMiddleware = async (req: any, res: any, next: any) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token)
@@ -37,7 +38,7 @@ const ProtectedRouteMiddleware = async (req: any, res: any, next: any) => {
       });
     }
 
-    const user = decoded && (await UserService.findUserById({ _id: decoded?._id }));
+    const user = decoded && (await userModule.services.common.findUserById({ _id: decoded?._id }));
 
     const userDetails = createPayload(user, ["_id", "username", "email", "bio", "avatar_url", "date_registered", "is_admin", "password"]);
 
@@ -46,4 +47,4 @@ const ProtectedRouteMiddleware = async (req: any, res: any, next: any) => {
   });
 };
 
-export { ProtectedRouteMiddleware };
+export { protectedRouteMiddleware };
