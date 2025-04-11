@@ -50,7 +50,7 @@ export const frontendAuthController = {
       ResponseHandler.success({
         res,
         statusCode: 200,
-        data: userPayload,
+        data: { ...userPayload, token },
         message: "Login successful",
       });
     } catch (error) {
