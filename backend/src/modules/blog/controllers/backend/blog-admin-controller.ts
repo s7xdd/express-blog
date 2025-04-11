@@ -29,7 +29,7 @@ export const adminBlogController = {
   async createBlog(req: any, res: any, next: NextFunction) {
     try {
       const allowedTextFields = createPayload(req?.body, ["title", "content"]);
-      const allowedImageFields = createPayload(req?.body?.images, ["thumbnail"]);
+      const allowedImageFields = createPayload(req?.body?.images, ["thumbnail_image", "blog_image"]);
 
       let categorySlugsOrIds = sanitizeArray(req?.body?.categories);
       const tags = sanitizeArray(req?.body?.tags);

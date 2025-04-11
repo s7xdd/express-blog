@@ -8,7 +8,10 @@ import { PermissionMiddleware } from "../../../../shared/middlewares/auth/admin/
 import { adminBlogController } from "../../controllers/backend/blog-admin-controller";
 import { imageUploadModule } from "../../../image-upload/image-upload-module";
 
-const blogImageFields = [{ name: "thumbnail", maxCount: 1, required: true }];
+const blogImageFields = [
+  { name: "thumbnail_image", maxCount: 1, required: true },
+  { name: "blog_image", maxCount: 1, required: true }
+];
 
 const blogAdminRouter = Router();
 

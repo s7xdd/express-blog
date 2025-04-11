@@ -14,7 +14,6 @@ export const uploadMiddleware = (
     multerInstance,
 
     async (req: any, res: Response, next: NextFunction): Promise<void> => {
-      console.log("req", req.files);
 
       for (const field of fields) {
         if (!req?.files?.[field.name] && field.required) {

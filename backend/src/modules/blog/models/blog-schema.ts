@@ -26,7 +26,6 @@ const blogSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       required: true,
-
     },
   ],
   tags: [
@@ -35,8 +34,13 @@ const blogSchema = new mongoose.Schema({
       trim: true,
     },
   ],
-  thumbnail: {
+  thumbnail_image: {
     type: String,
+    required: true,
+  },
+  blog_image: {
+    type: String,
+    required: true,
   },
   is_published: {
     type: Boolean,
