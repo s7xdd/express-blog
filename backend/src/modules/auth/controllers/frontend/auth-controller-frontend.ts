@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import * as bcrypt from "bcrypt";
 
 import { ResponseHandler } from "../../../../shared/components/response-handler/response-handler";
 import { comparePasswords, handleUserExistence } from "../../functions/auth-functions";
@@ -13,7 +14,10 @@ export const frontendAuthController = {
 
       await handleUserExistence({ username, throwUserExistsError: true });
 
-      const newUser: any = await userModule.services.common.createUser(req.body);
+      const allowedFields = createPayload(req.body, ["username", "email", "bio"]);
+      const hashedPassword = await bcrypt.hash(req.body?.password, 10);
+
+      const newUser: any = await userModule.services.common.createUser({ ...allowedFields, password: hashedPassword });
 
       const userPayload = createPayload(newUser, ["_id", "username", "email", "bio", "avatar_url", "date_registered"]);
 

@@ -1,5 +1,3 @@
-import * as bcrypt from "bcrypt";
-
 import { UserModel } from "../../models/user-schema";
 import { handleMongooseErrors } from "../../../../shared/utils/helper/mongodb/mongo-functions";
 import { createPayload } from "../../../../shared/utils/helper/common-functions";
@@ -24,14 +22,9 @@ export const userService = {
     }
   },
 
-  async createUser(userData: UserProps) {
+  async createUser(userData: any) {
     try {
-      const allowedFields = createPayload(userData, ["username", "email", "bio"]);
-      console.log("userData", allowedFields);
-
-      const hashedPassword = await bcrypt.hash(userData?.password, 10);
-
-      const newUser = new UserModel({ ...allowedFields, password: hashedPassword });
+      const newUser = new UserModel(userData);
       await newUser.save();
       return newUser;
     } catch (error) {
