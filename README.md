@@ -1,7 +1,7 @@
 <body>
 
-<h1>MERN Blog App Documentation</h1>
-<p>A Full stack Blog Application built with MongoDB, Express JS, Nextjs and Nodejs featuring an admin panel. Backend is built in a modular structure, making every part of the backend modular for scalability and maintainability. More features to come including user interactions, comments, etc. 
+<h1>Blog App API Documentation</h1>
+<p>A Blog Application built with MongoDB, Express JS and Nodejs. Backend is built in a modular structure, making every part of the backend modular for scalability and maintainability. More features to come including user interactions, comments, etc. 
 Work in progress.</p>
 
 <p>Base URL: <code>http://localhost:3000</code></p>
