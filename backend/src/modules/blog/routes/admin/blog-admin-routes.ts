@@ -9,8 +9,8 @@ import { adminBlogController } from "../../controllers/backend/blog-admin-contro
 import { imageUploadModule } from "../../../image-upload/image-upload-module";
 
 const blogImageFields = [
-  { name: "thumbnail", maxCount: 1 },
-  { name: "blogimage", maxCount: 1 },
+  { name: "thumbnail", maxCount: 1, required: true },
+  { name: "blogimage", maxCount: 1, required: true },
 ];
 
 const blogAdminRouter = Router();
