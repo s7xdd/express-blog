@@ -1,4 +1,4 @@
-import { adminBlogController } from "./controllers/backend/blog-admin-controller";
+import { adminBlogController } from "./controllers/admin/blog-admin-controller";
 import { frontendBlogController } from "./controllers/frontend/blog-frontend-controller";
 
 import blogAdminRouter from "./routes/admin/blog-admin-routes";

@@ -5,7 +5,7 @@ import { createBlogValidationSchema } from "../../validators/blog-validators";
 import { protectedRouteMiddleware } from "../../../../shared/middlewares/auth/auth-middleware";
 import { PERMISSION_BLOCKS } from "../../../auth/constants/auth-constants";
 import { PermissionMiddleware } from "../../../../shared/middlewares/auth/admin/permission-middleware-admin";
-import { adminBlogController } from "../../controllers/backend/blog-admin-controller";
+import { adminBlogController } from "../../controllers/admin/blog-admin-controller";
 import { imageUploadModule } from "../../../image-upload/image-upload-module";
 
 const blogImageFields = [
