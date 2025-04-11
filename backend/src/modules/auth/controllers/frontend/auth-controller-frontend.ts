@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 
 import { ResponseHandler } from "../../../../shared/components/response-handler/response-handler";
 import { comparePasswords, handleUserExistence } from "../../functions/auth-functions";
-import { userService } from "../../../user/services/common/user-service";
 import { generateJwt } from "../../functions/jwt-functions";
 import { createPayload } from "../../../../shared/utils/helper/common-functions";
 import { userModule } from "../../../user/user-module";
@@ -10,10 +9,11 @@ import { userModule } from "../../../user/user-module";
 export const frontendAuthController = {
   async registerUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { username, password, email, bio } = req.body;
+      const { username } = req.body;
+
       await handleUserExistence({ username, throwUserExistsError: true });
 
-      const newUser: any = await userModule.services.common.createUser({ username, password, email, bio });
+      const newUser: any = await userModule.services.common.createUser(req.body);
 
       const userPayload = createPayload(newUser, ["_id", "username", "email", "bio", "avatar_url", "date_registered"]);
 
