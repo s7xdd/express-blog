@@ -1,8 +1,6 @@
 import express from "express";
 import path from "path";
 
-import { errorHandler } from "../../shared/middlewares/error/error-middleware";
-
 require("dotenv").config();
 
 const app = express();

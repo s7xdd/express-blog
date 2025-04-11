@@ -22,7 +22,7 @@ blogAdminRouter.get("/", adminBlogController.getBlogs);
 
 blogAdminRouter.post(
   "/create-blog",
-  imageUploadModule.middleware.uploadMiddleware(blogImageFields, "/public/uploads/blog-uploads"),
+  imageUploadModule.middleware.uploadMiddleware(blogImageFields, "public/uploads/blog-uploads"),
   validateData(createBlogValidationSchema),
   adminBlogController.createBlog
 );

@@ -20,7 +20,8 @@ export const handleUploadedFiles = async (req: any, outputDir: string): Promise<
       const outputPath = path.join(outputDir, files[0].filename);
 
       await processImage(inputPath, outputPath);
-      processedImages[fieldName] = `/uploads/${path.basename(outputPath)}`;
+      
+      processedImages[fieldName] = `/uploads/blog-uploads/${files[0].filename}`;
 
       await fs.unlink(inputPath);
     }

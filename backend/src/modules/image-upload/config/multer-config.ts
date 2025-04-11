@@ -5,11 +5,14 @@ import fs from "fs";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, process.env.UPLOAD_TEMP_DIR || "uploads/temp");
+    const tempPath = path.resolve("public/uploads/temp");
+    fs.mkdirSync(tempPath, { recursive: true });
+    cb(null, tempPath);
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    cb(null, `${uuidv4()}${ext}`);
+    const filename = `${uuidv4()}${ext}`;
+    cb(null, filename);
   },
 });
 
@@ -21,8 +24,4 @@ const fileFilter = (req: Express.Request, file: Express.Multer.File, cb: multer.
 };
 
 export const createMulterInstance = (fields: { name: string; maxCount?: number }[]) =>
-  multer({
-    storage,
-    fileFilter,
-    limits: { fileSize: 10 * 1024 * 1024 },
-  }).fields(fields);
+  multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 1024 } }).fields(fields);
