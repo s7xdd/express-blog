@@ -1,14 +1,7 @@
 import { handleMongooseErrors } from "../../../../shared/utils/helper/mongodb/mongo-functions";
 import { BlogModel } from "../../models/blog-schema";
-import { QueryRuleProps, UserProps } from "../../../../shared/utils/types/common-types";
-import {
-  buildQueryFromRules,
-  createPayload,
-  sanitizeArray,
-  sluggify,
-} from "../../../../shared/utils/helper/common-functions";
+import { sluggify } from "../../../../shared/utils/helper/common-functions";
 import { userModule } from "../../../user/user-module";
-import { categoryModule } from "../../../category/category-module";
 
 export const blogService = {
   async findBlogById({ _id }: { _id: string }) {
@@ -20,33 +13,16 @@ export const blogService = {
     }
   },
 
-  async createBlog(blogData: any, userDetails: UserProps) {
-    const allowedFields = createPayload(blogData, ["title", "content", "thumbnail_url"]);
-
-    let categorySlugsOrIds = sanitizeArray(blogData.categories);
-    const tags = sanitizeArray(blogData.tags);
-
-    const categoryObjectIds = await Promise.all(
-      categorySlugsOrIds.map(async (cat) => {
-        const category = await categoryModule.services.common.findCategory(cat);
-        if (!category) {
-          throw new Error(`Category not found for: ${cat}`);
-        }
-        return category._id;
-      })
-    );
-
+  async createBlog(payload: any) {
     try {
       const blog = new BlogModel({
-        slug: sluggify(blogData?.title),
-        author_id: userDetails._id,
-        ...allowedFields,
-        categories: categoryObjectIds,
-        tags,
+        slug: sluggify(payload?.title),
+        author_id: payload.userDetails._id,
+        ...payload,
       });
 
       await blog.save();
-      await userModule.services.common.updateBlogCount({ _id: userDetails._id, addBlog: true });
+      await userModule.services.common.updateBlogCount({ _id: payload.userDetails._id, addBlog: true });
 
       return blog;
     } catch (error) {
@@ -54,23 +30,8 @@ export const blogService = {
     }
   },
 
-  async findBlogs(queryParams: any) {
+  async findBlogs(query: any, skip = 0, limit = 10) {
     try {
-      const queryRules: QueryRuleProps[] = [
-        { key: "title", type: "regex" },
-        { key: "author_id", type: "string" },
-        { key: "categories", type: "array" },
-        { key: "tags", type: "array" },
-        { key: "is_published", type: "boolean" },
-        { key: "keyword", type: "search" },
-      ];
-
-      const query = buildQueryFromRules(queryParams, queryRules);
-
-      const limit = parseInt(queryParams.limit, 10) || 10;
-      const page = parseInt(queryParams.page, 10) || 1;
-      const skip = (page - 1) * limit;
-
       const blogs = await BlogModel.find(query).sort({ date_published: -1 }).skip(skip).limit(limit);
 
       const totalBlogs = await BlogModel.countDocuments(query);

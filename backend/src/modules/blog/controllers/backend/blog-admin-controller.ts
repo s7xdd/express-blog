@@ -2,6 +2,8 @@ import { NextFunction } from "express";
 
 import { ResponseHandler } from "../../../../shared/components/response-handler/response-handler";
 import { blogService } from "../../services/common/blog-service";
+import { createPayload, sanitizeArray } from "../../../../shared/utils/helper/common-functions";
+import { categoryModule } from "../../../category/category-module";
 
 export const adminBlogController = {
   async getBlogs(req: any, res: any, next: NextFunction) {
@@ -26,7 +28,29 @@ export const adminBlogController = {
 
   async createBlog(req: any, res: any, next: NextFunction) {
     try {
-      const blog = await blogService.createBlog(req.body, req.userDetails);
+      const allowedFields = createPayload(req?.body, ["title", "content", "thumbnail_url"]);
+
+      let categorySlugsOrIds = sanitizeArray(req?.body?.categories);
+      const tags = sanitizeArray(req?.body?.tags);
+
+      const categoryObjectIds = await Promise.all(
+        categorySlugsOrIds.map(async (cat) => {
+          const category = await categoryModule.services.common.findCategory(cat);
+          if (!category) {
+            throw new Error(`Category not found for: ${cat}`);
+          }
+          return category._id;
+        })
+      );
+
+      const payload = {
+        ...allowedFields,
+        categories: categoryObjectIds,
+        tags,
+        userDetails: req?.userDetails,
+      };
+
+      const blog = await blogService.createBlog(payload);
 
       return ResponseHandler.success({
         res,
@@ -34,10 +58,8 @@ export const adminBlogController = {
         message: "Blog created successfully",
         data: blog,
       });
-
     } catch (error) {
       next(error);
     }
-  }
-
+  },
 };
