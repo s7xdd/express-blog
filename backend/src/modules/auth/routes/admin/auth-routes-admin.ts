@@ -3,8 +3,8 @@ import { loginValidationSchema } from "../../valitdators/auth-validator";
 import { validateData } from "../../../../shared/middlewares/common-middleware";
 import { adminAuthController } from "../../controllers/admin/auth-controller-admin";
 
-const adminAuthRouter = Router();
+const adminAuthRoutes = Router();
 
-adminAuthRouter.use('/login', validateData(loginValidationSchema), adminAuthController.loginUser);
+adminAuthRoutes.use('/login', validateData(loginValidationSchema), adminAuthController.loginUser);
 
-export default adminAuthRouter;
+export default adminAuthRoutes;

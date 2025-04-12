@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { frontendCategoryController } from "../../controller/frontend/category-controller-frontend";
 
-const categoryFrontEndRouter = Router();
+const categoryFrontEndRoutes = Router();
 
-categoryFrontEndRouter.get("/", frontendCategoryController.getCategories);
-categoryFrontEndRouter.get("/:id", frontendCategoryController.getCategory);
+categoryFrontEndRoutes.get("/", frontendCategoryController.getCategories);
+categoryFrontEndRoutes.get("/:id", frontendCategoryController.getCategory);
 
-export default categoryFrontEndRouter;
+export default categoryFrontEndRoutes;

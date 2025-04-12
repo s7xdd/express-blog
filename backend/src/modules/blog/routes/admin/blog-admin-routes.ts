@@ -13,18 +13,18 @@ const blogImageFields = [
   { name: "blog_image", maxCount: 1, required: true }
 ];
 
-const blogAdminRouter = Router();
+const blogAdminRoutes = Router();
 
-blogAdminRouter.use(protectedRouteMiddleware);
-blogAdminRouter.use(PermissionMiddleware({ requiredPermission: PERMISSION_BLOCKS.admin }));
+blogAdminRoutes.use(protectedRouteMiddleware);
+blogAdminRoutes.use(PermissionMiddleware({ requiredPermission: PERMISSION_BLOCKS.admin }));
 
-blogAdminRouter.get("/", adminBlogController.getBlogs);
+blogAdminRoutes.get("/", adminBlogController.getBlogs);
 
-blogAdminRouter.post(
+blogAdminRoutes.post(
   "/create-blog",
   imageUploadModule.middleware.uploadMiddleware(blogImageFields, "public/uploads/blog-uploads"),
   validateData(createBlogValidationSchema),
   adminBlogController.createBlog
 );
 
-export default blogAdminRouter;
+export default blogAdminRoutes;

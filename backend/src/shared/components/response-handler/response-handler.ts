@@ -16,6 +16,12 @@ interface ErrorOptions extends BaseResponseOptions {
   error?: any;
 }
 
+interface SendFileOptions extends BaseResponseOptions {
+  filePath: string;
+  fileName?: string;
+  contentType?: string;
+}
+
 export const ResponseHandler = {
   success: ({
     res,
@@ -42,4 +48,32 @@ export const ResponseHandler = {
       ...props,
     });
   },
+
+  sendFile: ({
+    res,
+    filePath,
+    fileName,
+    contentType,
+    statusCode = 200,
+    message = "File sent successfully",
+  }: SendFileOptions) => {
+    res.status(statusCode).sendFile(
+      filePath,
+      // (err) => {
+      //   if (err) {
+      //     console.error(err);
+      //     res.status(500).json({
+      //       success: false,
+      //       message: "Error sending file",
+      //     });
+      //   } else {
+      //     res.status(statusCode).json({
+      //       success: true,
+      //       message,
+      //     });
+      //   }
+      // }
+    );
+  },
 };
+
