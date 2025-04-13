@@ -1,3 +1,4 @@
+
 export const generateOtp = async (length = 4): Promise<{
     otp: string;
     otpExpiry: Date,
@@ -17,3 +18,4 @@ export const generateOtp = async (length = 4): Promise<{
 
     return { otp, otpExpiry };
 };
+

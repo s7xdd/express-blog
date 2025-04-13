@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+
 import { ResponseHandler } from "../../../shared/components/response-handler/response-handler";
 
 export const otpMiddleware = {
