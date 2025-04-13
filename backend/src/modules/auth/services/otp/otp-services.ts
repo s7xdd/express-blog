@@ -1,7 +1,7 @@
-import { handleUserExistence } from "../../../shared/utils/helper/common-functions";
-import { UserProps } from "../../auth/types/auth-types";
-import { userModule } from "../../user/user-module";
-import { generateOtp } from "../functions/otp-functions";
+import { handleUserExistence } from "../../../../shared/utils/helper/common-functions";
+import { generateOtp } from "../../functions/auth-functions";
+import { UserProps } from "../../types/auth-types";
+import { userService } from "../user/user-service";
 
 export const otpServices = {
     async generateOtp(length = 4): Promise<{
@@ -15,11 +15,11 @@ export const otpServices = {
     async validateOtp({ userData, inputOtp }: { userData: UserProps, inputOtp: string }): Promise<boolean> {
 
         if (!(userData.otp) || new Date() > userData.otp_expiry) {
-            return false; 
+            return false;
         }
 
         if (userData.otp !== inputOtp) {
-            return false; 
+            return false;
         }
 
         return true;
@@ -37,7 +37,7 @@ export const otpServices = {
         if (requireOtp && !user.is_verified) {
             const newOtp = await this.generateOtp();
 
-            await userModule.services.common.updateUser(user._id, {
+            await userService.updateUser(user._id, {
                 otp: newOtp.otp,
                 otp_expiry: newOtp.otpExpiry,
             });
@@ -70,7 +70,7 @@ export const otpServices = {
 
         const newOtp = await this.generateOtp();
 
-        await userModule.services.common.updateUser(user._id, {
+        await userService.updateUser(user._id, {
             otp: newOtp.otp,
             otp_expiry: newOtp.otpExpiry,
         });
@@ -96,7 +96,7 @@ export const otpServices = {
             throw new Error("Invalid OTP");
         }
 
-        const updatedUser = await userModule.services.common.updateUser(user._id, {
+        const updatedUser = await userService.updateUser(user._id, {
             is_verified: true,
         });
 

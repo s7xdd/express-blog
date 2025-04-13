@@ -1,7 +1,6 @@
 import { handleMongooseErrors } from "../../../../shared/utils/helper/mongodb/mongo-functions";
 import { BlogModel } from "../../models/blog-schema";
 import { sluggify } from "../../../../shared/utils/helper/common-functions";
-import { userModule } from "../../../user/user-module";
 
 export const blogService = {
   async findBlogById({ _id }: { _id: string }) {

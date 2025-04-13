@@ -1,7 +1,5 @@
-import { UserModel } from "../../models/user-schema";
 import { handleMongooseErrors } from "../../../../shared/utils/helper/mongodb/mongo-functions";
-import { createPayload } from "../../../../shared/utils/helper/common-functions";
-import { UserProps } from "../../../auth/types/auth-types";
+import { UserModel } from "../../models/user-schema";
 
 export const userService = {
   async findUserByUsername({ username }: { username: string }) {

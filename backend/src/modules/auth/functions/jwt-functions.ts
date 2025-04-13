@@ -1,4 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
+
 import { UserProps } from "../types/auth-types";
 
 export const generateJwt = (user: UserProps) => {

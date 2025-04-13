@@ -2,11 +2,11 @@ import * as bcrypt from "bcrypt";
 import { Request, Response, NextFunction } from "express";
 
 import { ResponseHandler } from "../../../../shared/components/response-handler/response-handler";
-import { otpModule } from "../../../otp/otp-module";
-import { createPayload, handleUserExistence } from "../../../../shared/utils/helper/common-functions";
-import { userModule } from "../../../user/user-module";
 import { comparePasswords } from "../../functions/auth-functions";
 import { generateJwt } from "../../functions/jwt-functions";
+import { userService } from "../../services/user/user-service";
+import { otpServices } from "../../services/otp/otp-services";
+import { createPayload, handleUserExistence } from "../../../../shared/utils/helper/common-functions";
 
 export const frontendAuthController = {
   async registerUser(req: Request, res: Response, next: NextFunction) {
@@ -15,12 +15,12 @@ export const frontendAuthController = {
 
       await handleUserExistence({ username, throwUserExistsError: true });
 
-      const otp = await otpModule.services.otp.generateOtp();
+      const otp = await otpServices.generateOtp();
 
       const allowedFields = createPayload(req.body, ["username", "email", "bio"]);
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const newUser: any = await userModule.services.common.createUser({
+      const newUser: any = await userService.createUser({
         ...allowedFields,
         password: hashedPassword,
         otp: otp.otp,
@@ -55,7 +55,7 @@ export const frontendAuthController = {
       const isPasswordValid = await comparePasswords({ plainPassword: password, hashedPassword: user.password });
       if (!isPasswordValid) throw new Error("Invalid credentials");
 
-      const otpResponse = await otpModule.services.otp.handleOtp({ user, otpRequired });
+      const otpResponse = await otpServices.handleOtp({ user, otpRequired });
 
       if (otpResponse) {
         return ResponseHandler.error({
@@ -90,7 +90,7 @@ export const frontendAuthController = {
     try {
       const { otp, username } = req.body;
 
-      const verifiedUser: any = await otpModule.services.otp.verifyOtp({ username, inputOtp: otp });
+      const verifiedUser: any = await otpServices.verifyOtp({ username, inputOtp: otp });
 
       const userPayload = createPayload(verifiedUser, [
         "_id", "username", "email", "bio", "avatar_url", "date_registered", "is_verified",
@@ -118,15 +118,31 @@ export const frontendAuthController = {
 
       const { user }: any = await handleUserExistence({ username: username, throwNoUserExistsError: true, throwUserVerifiedError: true });
 
-      const newOtp = await otpModule.services.otp.generateOtp()
+      const newOtp = await otpServices.generateOtp()
 
-      await userModule.services.common.updateUser(user._id, { otp: newOtp.otp, otp_expiry: newOtp.otpExpiry });
+      await userService.updateUser(user._id, { otp: newOtp.otp, otp_expiry: newOtp.otpExpiry });
 
       ResponseHandler.success({
         res,
         statusCode: 200,
         message: "OTP resend successfully",
         data: newOtp,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getUserDetails(req: any, res: any, next: NextFunction) {
+
+    const userPayload = createPayload(req.userDetails, ["_id", "username", "email", "bio", "avatar_url", "date_registered"]);
+
+    try {
+      return ResponseHandler.success({
+        res,
+        statusCode: 200,
+        message: "User details fetched successfully",
+        data: userPayload,
       });
     } catch (error) {
       next(error);

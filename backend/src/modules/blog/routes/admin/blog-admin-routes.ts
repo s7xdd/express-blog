@@ -2,11 +2,10 @@ import { Router } from "express";
 
 import { validateData } from "../../../../shared/middlewares/common-middleware";
 import { createBlogValidationSchema } from "../../validators/blog-validators";
-import { protectedRouteMiddleware } from "../../../../shared/middlewares/auth/auth-middleware";
-import { PERMISSION_BLOCKS } from "../../../auth/constants/auth-constants";
-import { PermissionMiddleware } from "../../../../shared/middlewares/auth/admin/permission-middleware-admin";
+import { PERMISSION_BLOCKS } from "../../../auth/constants/admin/auth-constants";
 import { adminBlogController } from "../../controllers/admin/blog-admin-controller";
 import { imageUploadModule } from "../../../image-upload/image-upload-module";
+import { authModule } from "../../../auth/auth-module";
 
 const blogImageFields = [
   { name: "thumbnail_image", maxCount: 1, required: true },
@@ -15,8 +14,8 @@ const blogImageFields = [
 
 const blogAdminRoutes = Router();
 
-blogAdminRoutes.use(protectedRouteMiddleware);
-blogAdminRoutes.use(PermissionMiddleware({ requiredPermission: PERMISSION_BLOCKS.admin }));
+blogAdminRoutes.use(authModule.middlewares.protectedroute);
+blogAdminRoutes.use(authModule.middlewares.permission({ requiredPermission: PERMISSION_BLOCKS.admin }));
 
 blogAdminRoutes.get("/", adminBlogController.getBlogs);
 

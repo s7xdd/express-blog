@@ -1,8 +1,7 @@
-import { userModule } from "../../../modules/user/user-module";
+import { authModule } from "../../../modules/auth/auth-module";
 import { QueryRuleProps } from "../types/common-types";
 
 type AnyObject = Record<string, any>;
-
 
 export const buildQueryFromRules = (
     queryParams: Record<string, any>,
@@ -120,7 +119,7 @@ export const handleUserExistence = async ({
     throwUserNotVerifiedError?: boolean;
     throwUserVerifiedError?: boolean;
 }) => {
-    const user = await userModule.services.common.findUserByUsername({ username });
+    const user = await authModule.services.user.findUserByUsername({ username });
     const userExists = !!user;
 
     if (userExists) {

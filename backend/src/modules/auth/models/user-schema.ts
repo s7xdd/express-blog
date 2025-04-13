@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { UserProps } from "../../auth/types/auth-types";
+import { UserProps } from "../types/auth-types";
 
 const userSchema: Schema<UserProps> = new mongoose.Schema({
   username: {

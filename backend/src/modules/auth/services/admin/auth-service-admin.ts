@@ -1,8 +1,7 @@
-
-import { checkPermissionBlock, comparePasswords, } from "../../../functions/auth-functions";
-import { PERMISSION_BLOCKS } from "../../../constants/auth-constants";
-import { generateJwt } from "../../../functions/jwt-functions";
-import { handleUserExistence } from "../../../../../shared/utils/helper/common-functions";
+import { handleUserExistence } from "../../../../shared/utils/helper/common-functions";
+import { PERMISSION_BLOCKS } from "../../constants/admin/auth-constants";
+import { checkPermissionBlock, comparePasswords } from "../../functions/auth-functions";
+import { generateJwt } from "../../functions/jwt-functions";
 
 
 export const adminAuthService = {
