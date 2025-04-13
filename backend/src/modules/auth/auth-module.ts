@@ -7,6 +7,7 @@ export const authModule = {
     routes: {
         admin: adminAuthRoutes,
         frontend: frontendAuthRoutes,
+        
     },
     services: {
         admin: adminAuthService

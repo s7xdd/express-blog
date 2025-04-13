@@ -22,7 +22,6 @@ export const blogService = {
       });
 
       await blog.save();
-      await userModule.services.common.updateBlogCount({ _id: payload.userDetails._id, addBlog: true });
 
       return blog;
     } catch (error) {

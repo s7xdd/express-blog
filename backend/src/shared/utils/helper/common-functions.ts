@@ -1,3 +1,4 @@
+import { userModule } from "../../../modules/user/user-module";
 import { QueryRuleProps } from "../types/common-types";
 
 type AnyObject = Record<string, any>;
@@ -105,3 +106,42 @@ export const sanitizeArray = (arr: any[]) =>
     Array.isArray(arr)
         ? [...new Set(arr.map((item) => String(item).trim()).filter(Boolean))]
         : [];
+
+export const handleUserExistence = async ({
+    username,
+    throwUserExistsError = false,
+    throwNoUserExistsError = false,
+    throwUserNotVerifiedError = false,
+    throwUserVerifiedError = false,
+}: {
+    username: string;
+    throwUserExistsError?: boolean;
+    throwNoUserExistsError?: boolean;
+    throwUserNotVerifiedError?: boolean;
+    throwUserVerifiedError?: boolean;
+}) => {
+    const user = await userModule.services.common.findUserByUsername({ username });
+    const userExists = !!user;
+
+    if (userExists) {
+        if (throwUserExistsError) {
+            throw new Error("User already exists");
+        }
+        if (!user.is_verified && throwUserNotVerifiedError) {
+            throw new Error("User not verified");
+        }
+        if (user.is_verified && throwUserVerifiedError) {
+            throw new Error("User already verified");
+        }
+        return {
+            user,
+        };
+    } else {
+        if (throwNoUserExistsError) {
+            throw new Error(`User does not exist`);
+        }
+        return {
+            user,
+        };
+    }
+};

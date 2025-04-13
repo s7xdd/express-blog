@@ -28,7 +28,7 @@ export const ResponseHandler = {
     statusCode = 200,
     message = "Success",
     data = null,
-    totalCount = 0,
+    totalCount = null,
     props = {},
   }: SuccessOptions) => {
     res.status(statusCode).json({

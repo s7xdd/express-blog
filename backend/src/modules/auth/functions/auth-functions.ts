@@ -1,36 +1,6 @@
 import * as bcrypt from "bcrypt";
 
 import { decodeJwt } from "./jwt-functions";
-import { userModule } from "../../user/user-module";
-
-export const handleUserExistence = async ({
-  username,
-  throwUserExistsError = false,
-  throwNoUserExistsError = false,
-}: {
-  username: string;
-  throwUserExistsError?: boolean;
-  throwNoUserExistsError?: boolean;
-}) => {
-  const user = await userModule.services.common.findUserByUsername({ username });
-  const userExists = !!user;
-
-  if (userExists) {
-    if (throwUserExistsError) {
-      throw new Error("User already exists");
-    }
-    return {
-      user,
-    };
-  } else {
-    if (throwNoUserExistsError) {
-      throw new Error(`User does not exist`);
-    }
-    return {
-      user,
-    };
-  }
-};
 
 export const comparePasswords = async ({
   plainPassword,
@@ -61,3 +31,5 @@ export const checkPermissionBlock = ({ userDetails, requiredPermission }: { user
   }
   return false;
 };
+
+

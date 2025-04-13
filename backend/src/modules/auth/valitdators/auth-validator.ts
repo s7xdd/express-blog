@@ -13,3 +13,18 @@ export const loginValidationSchema = z.object({
   username: z.string(),
   password: z.string(),
 });
+
+export const otpValidationSchema = z.object({
+  username: z.string({
+    message: "Username is required"
+  }),
+  otp: z.string({
+    message: "OTP is required",
+  }).min(4, "OTP must be 4 digits long"),
+});
+
+export const resendOtpValidationSchema = z.object({
+  username: z.string({
+    message: "Username is required"
+  }),
+});

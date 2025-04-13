@@ -1,7 +1,8 @@
 
-import { checkPermissionBlock, comparePasswords, handleUserExistence } from "../../../functions/auth-functions";
+import { checkPermissionBlock, comparePasswords, } from "../../../functions/auth-functions";
 import { PERMISSION_BLOCKS } from "../../../constants/auth-constants";
 import { generateJwt } from "../../../functions/jwt-functions";
+import { handleUserExistence } from "../../../../../shared/utils/helper/common-functions";
 
 
 export const adminAuthService = {
@@ -20,7 +21,7 @@ export const adminAuthService = {
 
             if (checkPermissionBlock({ userDetails: user, requiredPermission: PERMISSION_BLOCKS.admin })) {
                 const token = generateJwt(user)
-                
+
                 const data = {
                     token,
                     user

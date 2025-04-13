@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
+import { UserProps } from "../../auth/types/auth-types";
 
-const userSchema = new mongoose.Schema({
+const userSchema: Schema<UserProps> = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -19,8 +20,19 @@ const userSchema = new mongoose.Schema({
   },
   total_blogs: {
     type: Number,
-    required: false,
     default: 0,
+  },
+  is_verified: {
+    type: Boolean,
+    default: false,
+  },
+  otp: {
+    type: String,
+    required: true,
+  },
+  otp_expiry: {
+    type: Date,
+    required: true,
   },
   bio: {
     type: String,
@@ -41,4 +53,5 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-export const UserModel = mongoose.model("User", userSchema);
+export const UserModel = mongoose.model<UserProps>("User", userSchema);
+

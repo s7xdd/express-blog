@@ -32,6 +32,15 @@ export const userService = {
     }
   },
 
+  async updateUser(_id: string, customerData: any) {
+    try {
+      const updatedUser = await UserModel.findByIdAndUpdate(_id, customerData, { new: true });
+      return updatedUser;
+    } catch (error) {
+      handleMongooseErrors(error);
+    }
+  },
+
   async updateBlogCount({ _id, addBlog = true }: { _id: string; addBlog?: boolean }) {
     try {
       const user: any = await this.findUserById({ _id });
