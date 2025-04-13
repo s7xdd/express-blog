@@ -6,16 +6,13 @@ import { errorHandler } from "./src/shared/middlewares/error/error-middleware";
 import frontEndRouter from "./src/app/frontend-router";
 import adminRouter from "./src/app/admin-router";
 import socketIoRouter from "./src/app/socket-io-router";
-import passportRouter from "./src/app/passport-router";
 
-app.use("/api/v1", frontEndRouter);
+
+//Front end routes
+app.use("/api", frontEndRouter);
+
+//Admin Routes
 app.use("/admin/v1", adminRouter);
-
-
-
-//Passport JS
-app.use("/api/v2", passportRouter)
-
 
 
 

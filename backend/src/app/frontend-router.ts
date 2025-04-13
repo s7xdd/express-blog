@@ -6,14 +6,17 @@ import { categoryModule } from "../modules/category/category-module";
 
 const frontEndRouter = Router();
 
-//BLOG ROUTES
-frontEndRouter.use("/auth", authModule.routes.frontend);
+//NORMAL AUTH
+frontEndRouter.use("/v1/auth", authModule.routes.v1);
 
-frontEndRouter.use("/user-details", authModule.routes.frontend);
+//PASSPORT AUTH
+frontEndRouter.use("/v2/auth", authModule.routes.v2);
 
-frontEndRouter.use("/blogs", blogModule.routes.frontend);
 
-frontEndRouter.use("/categories", categoryModule.routes.frontend);
+
+frontEndRouter.use("/v1/user-details", authModule.routes.v1);
+frontEndRouter.use("/v1/blogs", blogModule.routes.frontend);
+frontEndRouter.use("/v1/categories", categoryModule.routes.frontend);
 
 
 export default frontEndRouter;

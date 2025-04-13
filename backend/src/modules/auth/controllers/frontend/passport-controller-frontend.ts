@@ -1,10 +1,10 @@
 import * as bcrypt from "bcrypt";
 
 import { NextFunction, Request } from "express";
-import { ResponseHandler } from "../../../shared/components/response-handler/response-handler";
-import { createPayload, handleUserExistence } from "../../../shared/utils/helper/common-functions";
-import { otpServices } from "../../auth/services/otp/otp-services";
-import { userService } from "../../auth/services/user/user-service";
+import { createPayload, handleUserExistence } from "../../../../shared/utils/helper/common-functions";
+import { otpServices } from "../../services/otp/otp-services";
+import { userService } from "../../services/user/user-service";
+import { ResponseHandler } from "../../../../shared/components/response-handler/response-handler";
 
 export const passportController = {
     async registerUser(req: Request, res: any, next: NextFunction) {

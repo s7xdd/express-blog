@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { ResponseHandler } from '../../../shared/components/response-handler/response-handler';
+import { ResponseHandler } from '../../../../shared/components/response-handler/response-handler';
 
-export const protectRouteMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const protectRouteMiddlewarePassport = (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated && req.isAuthenticated()) {
         return next();
     }

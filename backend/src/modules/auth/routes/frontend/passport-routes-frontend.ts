@@ -1,12 +1,12 @@
 import express from 'express';
 import passport from 'passport';
 
-import { ResponseHandler } from '../../../shared/components/response-handler/response-handler';
-import '../strategies/local-strategy';
-import { passportController } from '../controller/passport-controller';
-import { validateData } from '../../../shared/middlewares/common-middleware';
-import { otpValidationSchema, registerValidationSchema, resendOtpValidationSchema } from '../../auth/valitdators/auth-validator';
-import { protectRouteMiddleware } from '../middleware/protected-route-middlware';
+import "../../strategies/local-strategy"
+import { ResponseHandler } from '../../../../shared/components/response-handler/response-handler';
+import { validateData } from '../../../../shared/middlewares/common-middleware';
+import { otpValidationSchema, registerValidationSchema, resendOtpValidationSchema } from '../../valitdators/auth-validator';
+import { passportController } from '../../controllers/frontend/passport-controller-frontend';
+import { protectRouteMiddlewarePassport } from '../../middleware/common/protected-route-middlware-passport';
 
 
 const passportRoutes = express.Router();
@@ -46,6 +46,6 @@ passportRoutes.post("/verify-otp", validateData(otpValidationSchema), passportCo
 passportRoutes.post("/resend-otp", validateData(resendOtpValidationSchema), passportController.resendOtp);
 
 
-passportRoutes.get("/get-user", protectRouteMiddleware, passportController.userDetails);
+passportRoutes.get("/get-user", protectRouteMiddlewarePassport, passportController.userDetails);
 
 export default passportRoutes;  
