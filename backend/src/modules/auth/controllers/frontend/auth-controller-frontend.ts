@@ -54,35 +54,38 @@ export const frontendAuthController = {
         hashedPassword: user!.password,
       });
 
-      if (!isPasswordValid) throw new Error("Invalid credentials");
+      if (isPasswordValid) {
+        const userPayload = createPayload(user!, ["_id", "username", "email", "bio", "avatar_url", "date_registered", "is_verified"]);
 
-      const userPayload = createPayload(user!, ["_id", "username", "email", "bio", "avatar_url", "date_registered", "is_verified"]);
+        if (!user.is_verified && requireOtp) {
+          const newOtp = await otpModule.services.otp.generateOtp();
+          await userModule.services.common.updateUser(user._id, { otp: newOtp.otp, otp_expiry: newOtp.otpExpiry });
 
-      if (!user.is_verified && requireOtp) {
-        const newOtp = await otpModule.services.otp.generateOtp();
-        await userModule.services.common.updateUser(user._id, { otp: newOtp.otp, otp_expiry: newOtp.otpExpiry });
+          ResponseHandler.error({
+            res,
+            statusCode: 200,
+            message: "User not verified",
+            props: {
+              data: {
+                ...userPayload
+              },
+              otp: newOtp.otp,
+            }
+          });
 
-        ResponseHandler.error({
-          res,
-          statusCode: 200,
-          message: "User not verified",
-          props: {
-            data: {
-              ...userPayload
-            },
-            otp: newOtp.otp,
-          }
-        });
+        } else {
+          const token = generateJwt(user!);
+          ResponseHandler.success({
+            res,
+            statusCode: 200,
+            message: "Login successful",
+            data: { userPayload, token },
+          });
+        }
+
       } else {
-        const token = generateJwt(user!);
-        ResponseHandler.success({
-          res,
-          statusCode: 200,
-          message: "Login successful",
-          data: { userPayload, token },
-        });
+        throw new Error("Invalid credentials");
       }
-
 
     } catch (error) {
       next(error);
@@ -97,27 +100,26 @@ export const frontendAuthController = {
 
       const isOtpValid = await otpModule.services.otp.validateOtp({ userData: user, inputOtp: otp });
 
-      if (!isOtpValid) {
+      if (isOtpValid) {
+        const newUser = await userModule.services.common.updateUser(user._id, { is_verified: true });
+
+        const userPayload = createPayload(newUser!, ["_id", "username", "email", "bio", "avatar_url", "date_registered", "is_verified"]);
+
+        const token = generateJwt(newUser!);
+
+        ResponseHandler.success({
+          res,
+          statusCode: 200,
+          message: "OTP verified successfully",
+          data: {
+            ...userPayload,
+            token,
+          },
+        });
+
+      } else {
         throw new Error("Invalid OTP");
       }
-
-      console.log("useruser", user, otp)
-
-      const newUser = await userModule.services.common.updateUser(user._id, { is_verified: true });
-
-      const userPayload = createPayload(newUser!, ["_id", "username", "email", "bio", "avatar_url", "date_registered", "is_verified"]);
-
-      const token = generateJwt(newUser!);
-
-      ResponseHandler.success({
-        res,
-        statusCode: 200,
-        message: "OTP verified successfully",
-        data: {
-          ...userPayload,
-          token,
-        },
-      });
     } catch (error) {
       next(error);
     }
@@ -127,7 +129,7 @@ export const frontendAuthController = {
     try {
       const { username } = req.body;
 
-      const user: any = await handleUserExistence({ username: username, throwNoUserExistsError: true, throwUserVerifiedError: true });
+      const { user }: any = await handleUserExistence({ username: username, throwNoUserExistsError: true, throwUserVerifiedError: true });
 
       const newOtp = await otpModule.services.otp.generateOtp()
 
