@@ -43,7 +43,9 @@ export const frontendAuthController = {
 
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { username, password } = req.body;
+      const { username, password, otpRequired } = req.body;
+
+      const requireOtp = otpRequired !== false;
 
       const { user }: { user: any } = await handleUserExistence({ username, throwNoUserExistsError: true });
 
@@ -56,7 +58,7 @@ export const frontendAuthController = {
 
       const userPayload = createPayload(user!, ["_id", "username", "email", "bio", "avatar_url", "date_registered", "is_verified"]);
 
-      if (!user.is_verified) {
+      if (!user.is_verified && requireOtp) {
         const newOtp = await otpModule.services.otp.generateOtp();
         await userModule.services.common.updateUser(user._id, { otp: newOtp.otp, otp_expiry: newOtp.otpExpiry });
 
@@ -65,12 +67,13 @@ export const frontendAuthController = {
           statusCode: 200,
           message: "User not verified",
           props: {
-            ...userPayload,
+            data: {
+              ...userPayload
+            },
             otp: newOtp.otp,
           }
         });
       } else {
-
         const token = generateJwt(user!);
         ResponseHandler.success({
           res,
@@ -89,8 +92,8 @@ export const frontendAuthController = {
   async verifyOtp(req: any, res: Response, next: NextFunction) {
     try {
       const { otp, username } = req.body;
-      
-      const { user }: any = await handleUserExistence({ username: username, throwNoUserExistsError: true, throwUserVerifiedError: true  });
+
+      const { user }: any = await handleUserExistence({ username: username, throwNoUserExistsError: true, throwUserVerifiedError: true });
 
       const isOtpValid = await otpModule.services.otp.validateOtp({ userData: user, inputOtp: otp });
 
