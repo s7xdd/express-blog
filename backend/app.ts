@@ -12,7 +12,9 @@ app.use("/admin/v1", adminRouter);
 
 
 
-//SOCKET IO ROUTER
+
+
+//SOCKET IO
 app.use("/socket-io", socketIoRouter)
 
 io.on("connection", (socket) => {
@@ -27,7 +29,6 @@ io.on("connection", (socket) => {
     console.log("A user disconnected");
   });
 });
-
 
 
 

@@ -29,7 +29,6 @@ export const frontendAuthController = {
 
       const payload = createPayload(newUser!, ["_id", "username", "email", "bio", "avatar_url", "date_registered", "otp"]);
 
-
       ResponseHandler.success({
         res,
         statusCode: 201,
@@ -45,9 +44,9 @@ export const frontendAuthController = {
     try {
       const { username, password, otpRequired } = req.body;
 
-      const requireOtp = otpRequired !== false;
-
       const { user }: { user: any } = await handleUserExistence({ username, throwNoUserExistsError: true });
+
+      const requireOtp = otpRequired !== false;
 
       const isPasswordValid = await comparePasswords({
         plainPassword: password,
