@@ -89,15 +89,18 @@ export const frontendAuthController = {
   async verifyOtp(req: any, res: Response, next: NextFunction) {
     try {
       const { otp, username } = req.body;
-      const user: any = await handleUserExistence({ username: username, throwNoUserExistsError: true, throwUserVerifiedError: true });
+      
+      const { user }: any = await handleUserExistence({ username: username, throwNoUserExistsError: true, throwUserVerifiedError: true  });
 
-      const isOtpValid = otpModule.services.otp.validateOtp({ userData: user, inputOtp: otp });
+      const isOtpValid = await otpModule.services.otp.validateOtp({ userData: user, inputOtp: otp });
 
       if (!isOtpValid) {
         throw new Error("Invalid OTP");
       }
 
-      const newUser = await userModule.services.common.updateUser(user.user._id, { is_verified: true });
+      console.log("useruser", user, otp)
+
+      const newUser = await userModule.services.common.updateUser(user._id, { is_verified: true });
 
       const userPayload = createPayload(newUser!, ["_id", "username", "email", "bio", "avatar_url", "date_registered", "is_verified"]);
 
