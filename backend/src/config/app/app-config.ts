@@ -15,7 +15,6 @@ const app = express();
 app.set('view engine', 'ejs');
 
 
-
 //SOCKET IO
 const server = http.createServer(app);
 const io = new Server(server);

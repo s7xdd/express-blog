@@ -6,6 +6,7 @@ import { errorHandler } from "./src/shared/middlewares/error/error-middleware";
 import frontEndRouter from "./src/app/frontend-router";
 import adminRouter from "./src/app/admin-router";
 import socketIoRouter from "./src/app/socket-io-router";
+import { socketIoOnConnectionFunctions } from "./src/modules/socket-io/functions/socket-io-server-functions";
 
 //Front end routes
 app.use("/api", frontEndRouter);
@@ -13,20 +14,14 @@ app.use("/api", frontEndRouter);
 //Admin Routes
 app.use("/admin/v1", adminRouter);
 
+
+
 //SOCKET IO
 app.use("/socket-io", socketIoRouter);
-io.on("connection", (socket) => {
-  console.log("A user connected");
+io.on("connection", socketIoOnConnectionFunctions);
 
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
-    console.log("message: " + msg);
-  });
 
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
-});
+
 
 app.use(errorHandler);
 
@@ -34,4 +29,4 @@ connectDb().then((res) => {
   console.log(res);
 });
 
-app.listen(process.env.PORT || 3000, () => console.log("Example app listening on port 3000!"));
+server.listen(process.env.PORT || 3000, () => console.log("Example app listening on port 3000!"));

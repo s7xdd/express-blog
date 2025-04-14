@@ -55,7 +55,7 @@ passportRoutes.get("/google", passport.authenticate("google", { scope: ["email",
 
 passportRoutes.get(
   "/google/callback",
-  passport.authenticate("google", { successRedirect: "/get-user", failureRedirect: "/google/login" })
+  passport.authenticate("google", { successRedirect: "/api/v2/auth/get-user", failureRedirect: "/api/v2/auth/google/login" })
 );
 
 
