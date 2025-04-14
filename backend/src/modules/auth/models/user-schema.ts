@@ -51,7 +51,10 @@ const userSchema: Schema<UserProps> = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  is_google: {
+    type: Boolean,
+    default: false, 
+  },
 });
 
 export const UserModel = mongoose.model<UserProps>("User", userSchema);
-

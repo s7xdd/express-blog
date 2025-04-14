@@ -20,6 +20,15 @@ export const userService = {
     }
   },
 
+  async findUserByEmail({ email }: { email: string }) {
+    try {
+      const user = await UserModel.findOne({ email });
+      return user;
+    } catch (error) {
+      handleMongooseErrors(error);
+    }
+  },
+
   async createUser(userData: any) {
     try {
       const newUser = new UserModel(userData);
