@@ -19,7 +19,6 @@ const passportRoutes = express.Router();
 
 //REGISTER AND LOGIN ROUTES
 passportRoutes.post("/register", validateData(registerValidationSchema), passportController.registerUser);
-
 passportRoutes.post("/login", async (req, res, next) => {
   passport.authenticate("local", { session: true }, async (err: any, user: any, info: any) => {
     if (err) return next(err);
@@ -50,13 +49,12 @@ passportRoutes.post("/login", async (req, res, next) => {
 
 //PASSPORT GOOGLE LOGIN ROUTES
 passportRoutes.get("/google-login", passportController.googleLogin);
-
 passportRoutes.get("/google", passport.authenticate("google", { scope: ["email", "profile"] }));
-
 passportRoutes.get(
   "/google/callback",
   passport.authenticate("google", { successRedirect: "/api/v2/auth/get-user", failureRedirect: "/api/v2/auth/google/login" })
 );
+
 
 
 //OTP ROUTES
@@ -64,10 +62,12 @@ passportRoutes.post("/verify-otp", validateData(otpValidationSchema), passportCo
 passportRoutes.post("/resend-otp", validateData(resendOtpValidationSchema), passportController.resendOtp);
 
 
+//LOGOUT ROUTE
+passportRoutes.post("/logout", protectRouteMiddlewarePassport, passportController.logout);
+
+
+
 passportRoutes.get("/get-user", protectRouteMiddlewarePassport, passportController.userDetails);
 
-
-//LOGOUT ROUTE
-passportRoutes.post("/logout", passportController.logout);
 
 export default passportRoutes;

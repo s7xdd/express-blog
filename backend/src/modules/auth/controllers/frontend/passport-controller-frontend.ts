@@ -157,10 +157,15 @@ export const passportController = {
   },
 
   async logout(req: any, res: any, next: NextFunction) {
-    try {
-      req.logOut();
-    } catch (err) {
-      next(err);
-    }
+    req.logout(function (err: any) {
+      if (err) {
+        return next(err);
+      }
+      ResponseHandler.success({
+        res,
+        message: "Logged out successfully",
+        data: (req)?.lean,
+      });
+    });
   },
 };

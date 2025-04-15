@@ -14,8 +14,6 @@ app.use("/api", frontEndRouter);
 //Admin Routes
 app.use("/admin/v1", adminRouter);
 
-
-
 //SOCKET IO
 app.use("/socket-io", socketIoRouter);
 io.on("connection", socketIoOnConnectionFunctions);

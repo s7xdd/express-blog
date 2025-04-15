@@ -3,6 +3,7 @@ import path from "path";
 
 import { Server } from "socket.io";
 import http from "http";
+import morgan from "morgan";
 
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -10,10 +11,12 @@ import passport from "passport";
 
 require("dotenv").config();
 
+const stripe = require("stripe")(process.env.STRIPE_KEY!);
+
 const app = express();
 
-app.set('view engine', 'ejs');
-
+app.use(morgan("dev"));
+app.set("view engine", "ejs");
 
 //SOCKET IO
 const server = http.createServer(app);
@@ -57,12 +60,10 @@ const showlogs = (req: any, res: any, next: any) => {
 
 // app.use(showlogs);
 
-
-
-
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
+
+app.use("/api/v1/checkout", express.static(path.join(__dirname, "..", "..", "modules", "stripe", "views")));
 
 export { app, io, server };
