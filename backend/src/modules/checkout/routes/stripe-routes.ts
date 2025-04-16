@@ -1,18 +1,15 @@
 import { Router } from "express";
 import { stripeController } from "../controllers/stripe-controller";
-import { validateData } from "../../../shared/middlewares/common-middleware";
-import { lineItemValidationSchema } from "../validators/checkout-validator";
 
 const stripeRoutes = Router();
 
+//Embedded Checkout Routes
 stripeRoutes.post("/create-checkout-session", stripeController.createCheckoutSession);
-
 stripeRoutes.get("/session-status", stripeController.getSessionStatus);
 
 
-//Embedded card entering form
+//Embedded card entering form Routes
 stripeRoutes.post("/create-payment-intent", stripeController.createPaymentIntent);
-
-
+stripeRoutes.post("/payment-status", stripeController.checkPaymentStatus);
 
 export default stripeRoutes;

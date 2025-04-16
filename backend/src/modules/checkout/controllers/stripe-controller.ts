@@ -1,9 +1,10 @@
+import { ResponseHandler } from "../../../shared/components/response-handler/response-handler";
+import { createPayload } from "../../../shared/utils/helper/common-functions";
 import { calculateOrderAmount } from "../functions/checkout-functions";
 import { stripeServices } from "../services/stripe-service";
+import { StripePaymentIntentProps } from "../types/stripe-types";
 
-const stripe = require("stripe")(
-  "sk_test_51RE8j4RifjQEyrRHRwpDUsoyVzOI7qYyyobTLQBVjRzkuUqr0ZcvAptC33ENXhs6Lk3rixsSb7WyrwhbPvn72OQf00QRuU2jwp"
-);
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 export const stripeController = {
   //Embedded Checkout Form
@@ -56,10 +57,36 @@ export const stripeController = {
   async createPaymentIntent(req: any, res: any) {
     const { id } = req.body;
 
-    const paymentIntent = await stripeServices.createPaymentIntent(id);
+    const paymentIntent = await stripeServices.createPaymentIntent({ id });
 
     res.send({
       clientSecret: paymentIntent.client_secret,
     });
+  },
+
+  //Send Payment Status
+  async checkPaymentStatus(req: any, res: any, next: any) {
+    try {
+      const { payment_intent } = req.body;
+      const response: StripePaymentIntentProps = await stripeServices.checkStripeStatus(payment_intent);
+
+      const payload = createPayload(response, [
+        "id",
+        "amount",
+        "amount_capturable",
+        "amount_received",
+        "currency",
+        "payment_method",
+        "status",
+      ]);
+
+      ResponseHandler.success({
+        res,
+        message: "success",
+        data: payload,
+      });
+    } catch (error) {
+      next(error);
+    }
   },
 };

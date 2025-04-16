@@ -29,15 +29,23 @@ export const stripeServices = {
   },
 
   //FOR EMBEDDED INPUT FORM
-  async createPaymentIntent(items: any) {
+  async createPaymentIntent(item: any) {
     const paymentIntent = await stripe.paymentIntents.create({
       // amount: calculateOrderAmount(items),
       amount: 1000,
       currency: "usd",
+      metadata: {
+        productId: item.id,
+      },
       automatic_payment_methods: {
         enabled: true,
       },
     });
+    return paymentIntent;
+  },
+
+  async checkStripeStatus(payment_intent: string) {
+    const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent);
     return paymentIntent;
   },
 };
