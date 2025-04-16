@@ -56,8 +56,6 @@ export const stripeController = {
   async createPaymentIntent(req: any, res: any) {
     const { id } = req.body;
 
-    console.log("id", id);
-
     const paymentIntent = await stripeServices.createPaymentIntent(id);
 
     res.send({

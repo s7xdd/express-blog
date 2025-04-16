@@ -6,6 +6,7 @@ import { calculateOrderAmount } from "../functions/checkout-functions";
 import { StripeCheckoutFormProps } from "../types/stripe-types";
 
 export const stripeServices = {
+  //FOR EMBEDDED UI
   async createSession(data: StripeCheckoutFormProps) {
     try {
       const session = await stripe.checkout.sessions.create({
@@ -27,6 +28,7 @@ export const stripeServices = {
     }
   },
 
+  //FOR EMBEDDED INPUT FORM
   async createPaymentIntent(items: any) {
     const paymentIntent = await stripe.paymentIntents.create({
       // amount: calculateOrderAmount(items),
