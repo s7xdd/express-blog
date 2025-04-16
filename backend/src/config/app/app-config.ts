@@ -8,6 +8,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
+import cors from "cors";
 
 require("dotenv").config();
 
@@ -17,6 +18,7 @@ const app = express();
 
 app.use(morgan("dev"));
 app.set("view engine", "ejs");
+app.use(cors());
 
 //SOCKET IO
 const server = http.createServer(app);
@@ -64,6 +66,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
-app.use("/api/v1/checkout", express.static(path.join(__dirname, "..", "..", "modules", "stripe", "views")));
+app.use("/api/v1/checkout", express.static(path.join(__dirname, "..", "..", "modules", "checkout", "views")));
 
 export { app, io, server };

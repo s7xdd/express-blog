@@ -8,6 +8,20 @@ async function initialize() {
   const fetchClientSecret = async () => {
     const response = await fetch("/api/v1/checkout/create-checkout-session", {
       method: "POST",
+      body: {
+        lineItems: [
+          {
+            price_data: {
+              unit_amount: 400000,
+              currency: "usd",
+              product_data: {
+                name: "Test Product",
+              },
+            },
+            quantity: 1,
+          },
+        ],
+      },
     });
     const { clientSecret } = await response.json();
     return clientSecret;

@@ -1,10 +1,13 @@
 import { Router } from "express";
-import { stripeController } from "../controllers/stripe-controller";
+import { checkoutController } from "../controllers/checkout-controller";
+import { validateData } from "../../../shared/middlewares/common-middleware";
+import { checkoutValidationSchema } from "../types/checkout-types";
+import { authModule } from "../../auth/auth-module";
 
-const stripeRoutes = Router();
+const checkoutRoutes = Router();
 
-stripeRoutes.post("/create-checkout-session", stripeController.createCheckoutSession);
+checkoutRoutes.post("/create-checkout-session", authModule.middlewares.protectedroute_passport, validateData(checkoutValidationSchema), checkoutController.createCheckoutSession);
 
-stripeRoutes.get("/session-status", stripeController.getSessionStatus);
 
-export default stripeRoutes;
+
+export default checkoutRoutes;

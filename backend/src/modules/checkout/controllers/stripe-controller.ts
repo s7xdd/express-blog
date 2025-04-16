@@ -1,30 +1,36 @@
+import { calculateOrderAmount } from "../functions/checkout-functions";
+import { stripeServices } from "../services/stripe-service";
+
 const stripe = require("stripe")(
   "sk_test_51RE8j4RifjQEyrRHRwpDUsoyVzOI7qYyyobTLQBVjRzkuUqr0ZcvAptC33ENXhs6Lk3rixsSb7WyrwhbPvn72OQf00QRuU2jwp"
 );
 
-const YOUR_DOMAIN = process.env.SERVER_BASE_URL;
-
 export const stripeController = {
-  async createCheckoutSession(req: any, res: any) {
-    const session = await stripe.checkout.sessions.create({
-      ui_mode: "embedded",
-      customer_email: "customer@example.com",
-      submit_type: "auto",
-      billing_address_collection: "auto",
-      shipping_address_collection: {
-        allowed_countries: ["US", "CA"],
-      },
-      line_items: [
-        {
-          price: "price_1REBF6RifjQEyrRHa62nkLtB",
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      return_url: `${YOUR_DOMAIN}/api/v1/checkout/return.html?session_id={CHECKOUT_SESSION_ID}`,
-    });
+  //Embedded Checkout Form
+  async createCheckoutSession(req: any, res: any, next: any) {
+    try {
+      const data = {
+        line_items: [
+          {
+            price_data: {
+              unit_amount: 400000,
+              currency: "usd",
+              product_data: {
+                name: "Test Product",
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        customer_email: "test@gmail.com",
+      };
 
-    res.send({ clientSecret: session.client_secret });
+      const session = await stripeServices.createSession(data);
+
+      res.send({ clientSecret: session.client_secret });
+    } catch (error) {
+      next(error);
+    }
   },
 
   async getSessionStatus(req: any, res: any) {
@@ -44,5 +50,18 @@ export const stripeController = {
 
     if (checkoutSession.payment_status !== "unpaid") {
     }
+  },
+
+  //Embedded card entering form
+  async createPaymentIntent(req: any, res: any) {
+    const { id } = req.body;
+
+    console.log("id", id);
+
+    const paymentIntent = await stripeServices.createPaymentIntent(id);
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
   },
 };

@@ -1,8 +1,10 @@
-import stripeRoutes from "./routes/checkout-routes";
+import checkoutRoutes from "./routes/checkout-routes";
+import stripeRoutes from "./routes/stripe-routes";
 
 export const checkoutModule = {
   routes: {
-    stripe: stripeRoutes,
+    v1: stripeRoutes,
+    v2: checkoutRoutes,
   },
 
   controllers: {},

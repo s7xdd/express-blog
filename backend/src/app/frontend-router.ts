@@ -14,7 +14,7 @@ frontEndRouter.use("/v1/auth", authModule.routes.v1);
 frontEndRouter.use("/v2/auth", authModule.routes.v2);
 
 //STRIPE PAYMENT
-frontEndRouter.use("/v1/checkout", checkoutModule.routes.stripe);
+frontEndRouter.use("/v1/checkout", checkoutModule.routes.v1);
 
 frontEndRouter.use("/v1/user-details", authModule.routes.v1);
 frontEndRouter.use("/v1/blogs", blogModule.routes.frontend);
