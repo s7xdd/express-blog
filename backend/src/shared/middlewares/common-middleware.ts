@@ -1,14 +1,16 @@
 import { ZodError } from "zod";
+import { formatValidationErrors } from "../utils/helper/common-functions";
+import { ResponseHandler } from "../components/response-handler/response-handler";
 
 export const validateData = (schema: any) => (req: any, res: any, next: any) => {
   try {
     schema.parse(req.body);
     next();
   } catch (error: ZodError | any) {
-    res.status(400).json({
-      status: false,
-      data: [],
-      error: error?.issues,
+    ResponseHandler.error({
+      res,
+      message: "Validation Error",
+      error: formatValidationErrors(error?.issues),
     });
   }
 };

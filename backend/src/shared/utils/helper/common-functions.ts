@@ -1,3 +1,4 @@
+import { ZodError } from "zod";
 import { authModule } from "../../../modules/auth/auth-module";
 import { QueryRuleProps } from "../types/common-types";
 
@@ -143,4 +144,14 @@ export const handleUserExistence = async ({
             user,
         };
     }
+};
+
+export const formatValidationErrors = (errors: ZodError['issues']): Record<string, string> => {
+    const formattedErrors: Record<string, string> = {};
+    errors.forEach((issue: any) => {
+        const path = issue.path.join('.');
+        formattedErrors[path] = issue.message;
+    });
+
+    return formattedErrors;
 };
