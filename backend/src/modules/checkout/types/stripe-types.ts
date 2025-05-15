@@ -11,7 +11,27 @@ export interface StripeCheckoutFormProps {
     quantity: number;
   }>;
 }
+export interface StripeSetupIntentProps {
+  id: string;
+  status: string;
+  payment_method: string;
+  customer: string;
+}
 
+export interface CreatePaymentMethodParams {
+  paymentMethodId: string;
+  email: string;
+}
+
+export interface CreateSetupIntentParams {
+  customerId: string;
+}
+
+export interface CreatePaymentIntentParams {
+  amount: number;
+  currency: string;
+  stripeCustomerId: string;
+}
 
 export interface StripePaymentIntentProps {
   id: string;
@@ -54,7 +74,7 @@ export interface StripePaymentIntentProps {
       mandate_options: null;
       network: null;
       request_three_d_secure: 'automatic';
-    },
+    };
     link: {
       persistent_token: null;
     };
@@ -84,4 +104,10 @@ export interface StripePaymentIntentProps {
   status: 'succeeded';
   transfer_data: null;
   transfer_group: null;
+}
+
+export interface CreateSubscriptionParams {
+  customerId: string;
+  priceId: string;
+  paymentMethodId: string;
 }
