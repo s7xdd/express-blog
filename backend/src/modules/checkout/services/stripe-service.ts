@@ -38,7 +38,8 @@ export const stripeServices = {
           enabled: true,
           allow_redirects: 'never',
         },
-        metadata: { newMetadata },
+        metadata: { ...newMetadata },
+        setup_future_usage: 'off_session',
       });
       return paymentIntent;
     } catch (error: any) {
@@ -106,9 +107,56 @@ export const stripeServices = {
     }
   },
 
+  async attachPaymentMethod(customerId: string, paymentMethodId: string) {
+    try {
+      const paymentMethod = await stripe.paymentMethods.attach(paymentMethodId, {
+        customer: customerId,
+      });
+      await stripe.customers.update(customerId, {
+        invoice_settings: {
+          default_payment_method: paymentMethodId,
+        },
+      });
+      return paymentMethod;
+    } catch (error: any) {
+      throw new Error(`Failed to attach payment method: ${error.message}`);
+    }
+  },
+
   async createSubscription({ customerId, priceId, paymentMethodId, paymentIntentId, metaData }: { customerId: string, priceId: string, paymentIntentId: string, paymentMethodId: string, metaData: { [key: string]: string } }) {
     try {
+      let paymentMethod;
+      try {
+        paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
+      } catch (error: any) {
+        throw new Error(`Invalid payment method: ${error.message}`);
+      }
+
+      if (!paymentMethod.customer) {
+        await stripe.paymentMethods.attach(paymentMethodId, {
+          customer: customerId,
+        });
+      } else if (paymentMethod.customer !== customerId) {
+        throw new Error('Payment method is attached to a different customer.');
+      }
+
+      await stripe.customers.update(customerId, {
+        invoice_settings: {
+          default_payment_method: paymentMethodId,
+        },
+      });
+
       const trialEnd = Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60;
+
+      await stripe.paymentMethods.attach(paymentMethodId, {
+        customer: customerId,
+      });
+
+      await stripe.customers.update(customerId, {
+        invoice_settings: {
+          default_payment_method: paymentMethodId,
+        },
+      });
 
       const subscription = await stripe.subscriptions.create({
         customer: customerId,

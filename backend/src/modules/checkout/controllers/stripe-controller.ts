@@ -62,7 +62,7 @@ export const stripeController = {
 
       const selectedPlan = {
         planId: '123',
-        planAmount: '10',
+        planAmount: '20000',
         currency: 'USD',
         planPriceId: 'price_1RODPwRifjQEyrRHqSg4Dda8'
       }
@@ -82,6 +82,7 @@ export const stripeController = {
         data: {
           clientSecret: paymentIntent.client_secret,
           paymentIntentId: paymentIntent.id,
+          paymentIntent: paymentIntent,
         },
       });
     } catch (error) {
@@ -116,9 +117,12 @@ export const stripeController = {
   async createSubscription(req: any, res: any, next: any) {
     try {
       const { customerId, priceId, paymentMethodId, paymentIntentId, metaData } = req.body;
-      if (!customerId) {
-        throw new Error('Missing customerId');
+      console.log("req.body",req.body);
+      
+      if (!customerId || !priceId || !paymentMethodId || !metaData) {
+        throw new Error('Missing details');
       }
+      
       const subscription = await stripeServices.createSubscription({ customerId, priceId, paymentMethodId, paymentIntentId, metaData });
 
       ResponseHandler.success({
