@@ -33,7 +33,7 @@ export interface CreatePaymentIntentParams {
   stripeCustomerId: string;
 }
 
-export interface StripePaymentIntentProps {
+export interface StripePaymentIntentResponseProps {
   id: string;
   object: 'payment_intent';
   amount: number;
@@ -60,7 +60,9 @@ export interface StripePaymentIntentProps {
   last_payment_error: null;
   latest_charge: string;
   livemode: boolean;
-  metadata: {};
+  metadata: {
+    [key: string]: any;
+  };
   next_action: null;
   on_behalf_of: null;
   payment_method: string;

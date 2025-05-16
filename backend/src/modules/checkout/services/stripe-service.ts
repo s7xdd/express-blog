@@ -27,7 +27,7 @@ export const stripeServices = {
   },
 
   //FOR EMBEDDED INPUT FORM
-  async createPaymentIntent({ amount, currency, stripeCustomerId }: CreatePaymentIntentParams) {
+  async createPaymentIntent({ amount, currency, stripeCustomerId, newMetadata }: { amount: string, currency: string, stripeCustomerId: string, newMetadata: { [key: string]: string } }) {
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
@@ -38,33 +38,11 @@ export const stripeServices = {
           enabled: true,
           allow_redirects: 'never',
         },
+        metadata: { newMetadata },
       });
       return paymentIntent;
     } catch (error: any) {
       throw new Error(`Failed to create payment intent: ${error.message}`);
-    }
-  },
-
-  async createSetupIntent({ customerId }: CreateSetupIntentParams) {
-    try {
-      const setupIntent = await stripe.setupIntents.create({
-        customer: customerId,
-        payment_method_types: ['card'],
-        usage: 'off_session',
-      });
-      console.log('Created Setup Intent:', setupIntent.id);
-      return setupIntent;
-    } catch (error: any) {
-      throw new Error(`Failed to create setup intent: ${error.message}`);
-    }
-  },
-
-  async checkSetupIntentStatus(setupIntentId: string) {
-    try {
-      const setupIntent = await stripe.setupIntents.retrieve(setupIntentId);
-      return setupIntent;
-    } catch (error: any) {
-      throw new Error(`Failed to retrieve setup intent: ${error.message}`);
     }
   },
 
@@ -77,11 +55,6 @@ export const stripeServices = {
     }
   },
 
-  async checkStripeStatus(payment_intent: string) {
-    const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent);
-    return paymentIntent;
-  },
-
   async createCustomer(email: string) {
     try {
       const customer = await stripe.customers.create({ email });
@@ -91,45 +64,110 @@ export const stripeServices = {
     }
   },
 
-  async createAndAttachPaymentMethod({ paymentMethodId, email }: CreatePaymentMethodParams) {
+  async findSubscription({ subscriptionId }: { subscriptionId: string }) {
     try {
-      const customer = await stripe.customers.create({ email });
-      await stripe.paymentMethods.attach(paymentMethodId, { customer: customer.id });
-      await stripe.customers.update(customer.id, {
-        invoice_settings: {
-          default_payment_method: paymentMethodId,
-        },
-      });
-      return { customerId: customer.id, paymentMethodId };
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      return subscription;
     } catch (error: any) {
-      throw new Error(`Failed to create and attach payment method: ${error.message}`);
+      throw new Error(`Failed to find subscription: ${error.message}`);
     }
   },
 
-  async attachPaymentMethod(customerId: string, paymentMethodId: string) {
+  async getAllSubscriptions({ customerId }: { customerId: string }) {
     try {
-      await stripe.paymentMethods.attach(paymentMethodId, { customer: customerId });
-      await stripe.customers.update(customerId, {
-        invoice_settings: {
-          default_payment_method: paymentMethodId,
-        },
+      const subscriptions = await stripe.subscriptions.list({
+        customer: customerId,
+        status: 'all',
+        expand: ['data.default_payment_method'],
       });
+      return subscriptions;
     } catch (error: any) {
-      throw new Error(`Failed to attach payment method: ${error.message}`);
+      throw new Error(`Failed to find subscriptions: ${error.message}`);
     }
   },
 
-  async createSubscription({ customerId, priceId, paymentMethodId }: CreateSubscriptionParams) {
+  async deleteSubscription({ subscriptionId }: { subscriptionId: string }) {
     try {
+      const deletedSubscription = await stripe.subscriptions.del(
+        subscriptionId
+      );
+      return deletedSubscription;
+    } catch (error: any) {
+      throw new Error(`Failed to delete subscription: ${error.message}`);
+    }
+  },
+  async invoiceLookup({ subscriptionId, customerId, priceId }: { subscriptionId: string; customerId: string, priceId: string }) {
+    try {
+      const subscription = await this.findSubscription({ subscriptionId });
+      const invoice = await stripe.invoices.retrieve(subscription.latest_invoice.id);
+      return invoice;
+    } catch (error: any) {
+      throw new Error(`Failed to find invoice: ${error.message}`);
+    }
+  },
+
+  async createSubscription({ customerId, priceId, paymentMethodId, paymentIntentId, metaData }: { customerId: string, priceId: string, paymentIntentId: string, paymentMethodId: string, metaData: { [key: string]: string } }) {
+    try {
+      const trialEnd = Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60;
+
       const subscription = await stripe.subscriptions.create({
         customer: customerId,
         items: [{ price: priceId }],
-        payment_behavior: 'default_incomplete',
         default_payment_method: paymentMethodId,
+        payment_behavior: 'allow_incomplete',
+        trial_end: trialEnd,
+        metadata: { ...metaData, setupCostPaymentId: paymentIntentId },
       });
-      return subscription;
+
+      if (!subscription) {
+        throw new Error('Failed to create subscription');
+      }
+
+      return {
+        subscription,
+      };
     } catch (error: any) {
-      throw new Error(`Failed to create subscription: ${error.message}`);
+      throw new Error(`Failed to create subscription or payment intent: ${error.message}`);
     }
   },
+
+  async updateSubscriptionPaymentMethod({ customerId, subscriptionId, paymentMethodId, paymentIntentId }: { customerId: string, subscriptionId: string, paymentMethodId: string, paymentIntentId: string }) {
+    try {
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+      if (paymentIntent.status !== 'succeeded') {
+        throw new Error(`PaymentIntent is not succeeded. Status: ${paymentIntent.status}`);
+      }
+
+      const invoiceId = paymentIntent.metadata.invoice_id;
+      if (!invoiceId) {
+        throw new Error('No invoice ID found in PaymentIntent metadata');
+      }
+
+      const invoice = await stripe.invoices.retrieve(invoiceId);
+
+      if (invoice.status === 'open') {
+        await stripe.invoices.finalizeInvoice(invoice.id, {
+          auto_advance: true,
+        });
+      } else if (invoice.status !== 'paid') {
+        throw new Error(`Invoice is not paid and cannot be finalized. Status: ${invoice.status}`);
+      }
+
+      await stripe.paymentMethods.attach(paymentMethodId, { customer: customerId });
+
+      await stripe.customers.update(customerId, {
+        invoice_settings: { default_payment_method: paymentMethodId },
+      });
+
+      const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
+        default_payment_method: paymentMethodId,
+        status: invoice.status === 'paid' ? 'active' : 'incomplete',
+      });
+
+      return { subscription: updatedSubscription, invoice };
+    } catch (error: any) {
+      throw new Error(`Failed to update subscription payment method: ${error.message}`);
+    }
+  }
 };
