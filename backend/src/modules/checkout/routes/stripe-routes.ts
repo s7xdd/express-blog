@@ -13,21 +13,18 @@ stripeRoutes.post("/create-payment-intent", stripeController.createPaymentIntent
 stripeRoutes.post("/check-payment-intent-status", stripeController.checkPaymentIntentStatus);
 
 
-
-
-
-
-
-stripeRoutes.post("/create-customer", stripeController.createStripeCustomer);
-stripeRoutes.post("/create-subscription", stripeController.createSubscription);
-stripeRoutes.get("/stripe-callback", stripeController.stripeCallback);
-
-
-
 stripeRoutes.post("/attach-payment-method", stripeController.attachPaymentMethod);
 stripeRoutes.post("/find-subscription", stripeController.findSubscription);
 stripeRoutes.post("/invoice-preview", stripeController.invoicePreview);
 stripeRoutes.post("/cancel-subscription", stripeController.cancelSubscription);
+
+
+
+//NEW ROUTES
+stripeRoutes.post("/create-customer", stripeController.createStripeCustomer);
+stripeRoutes.post("/create-subscription", stripeController.createSubscription);
+stripeRoutes.get("/stripe-callback", stripeController.stripeCallback);
+
 
 
 
